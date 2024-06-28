@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./librerias/bootstrap.min.css" />
+    <script src="./librerias/bootstrap.bundle.min.js"></script>
+    <style>
+      body {
+        font-size: 1.25em !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+      }
+
+      p {
+        text-align: justify;
+      }
+
+      pre {
+        color: #eeeeee;
+        padding: 5px;
+        border-radius: 3px;
+        background-color: #2b2b2b;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 style="text-align: center" class="mb-5">Documentación del sistema</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-3">
+          <ul>
+            <li><a href="#servidor">Servidor</a></li>
+            <ul>
+              <li><a href="#modelos">Modelos</a></li>
+                <ul>
+                    <li><a href="#modelo-usuario">Usuario</a></li>
+                    <li><a href="#modelo-libro">Libro</a></li>
+                    <li><a href="#modelo-comentario">Comentario</a></li>
+                    <li><a href="#modelo-prestamo">Prestamo</a></li>
+                    <li><a href="#modelo-reserva">Reserva</a></li>
+                </ul>
+              <li><a href="#controladores">Controladores</a></li>
+            </ul>
+            <li>Cliente</li>
+            <ul>
+              <li>Paginas</li>
+              <ul>
+                <li>Inicio</li>
+                <li>Usuarios</li>
+                <ul></ul>
+                <li>Libros</li>
+                <li>Reservas</li>
+                <li>Prestamos</li>
+              </ul>
+              <li>Componentes</li>
+              <li>Utils</li>
+            </ul>
+            
+            
+          </ul>
+        </div>
+        <div class="col-9">
+          <p>
+            El siguiente es un sistema de biblioteca diseñado en el marco la
+            materia de Practicas Profesionalizantes de 1er año de la carrera de
+            tecnicatura superior de análisis de sistemas del instituto superior
+            de formación docente y técnica N° 2.
+          </p>
+          <p>
+            Para el proyecto se decidió por un patrón de diseño de software de
+            tipo MVC (Modelo, Vista, Controlador). El modelo se encarga de
+            manejar los datos y lógica de negocios, las vistas se encargan del
+            diseño y presentación desde el lado del cliente y los controladores
+            contiene la lógica que actualiza el modelo y las vistas dependiendo
+            del tipo de petición que realice el usuario.
+          </p>
+          <h2 class="mt-4">Tecnologías usadas en el proyecto</h2>
+          <hr>
+          <h3 class="mt-3">Cliente:</h3>
+          <ul>
+            <li>
+              <b>Vite:</b> Es un empaquetador que se utilizó para crear el
+              entorno de react.
+            </li>
+            <li>
+              <b>React:</b> Es una biblioteca que permite la creación de
+              interfaces de usuarios mediante componentes.
+            </li>
+            <li>
+              <b>React Router:</b> Colección de Componentes para la navegación
+            </li>
+          </ul>
+          <h3 class="mt-3">Servidor:</h3>
+          <ul>
+            <li>
+              <b>MongoDB:</b> Usado para crear la base de datos del proyecto.
+              Esta base de datos es del tipo NoSQL
+            </li>
+            <li>
+              <b>Mongoose:</b> Nos permitió conectar mongodb y node.js mediante
+              metodos.
+            </li>
+            <li>
+              <b>Body Parser:</b> Es una librería de NodeJS utilizada para
+              formatear la información recibida por el servidor de formato json
+              a JavaScript.
+            </li>
+            <li>
+              <b>NodeJS:</b> Es un entorno que permite ejecutar codigo
+              JavaScript desde el lado del servidor.
+            </li>
+            <li>
+              <b>Express Session:</b> Utilizado para mantener las cookies de las
+              sesiones.
+            </li>
+            <li><b>Passport:</b> Para el manejo de contraseñas.</li>
+            <li>
+              <b>Joi:</b> Utilizado para realizar las validaciones de los datos
+              recibidos en los formularios.
+            </li>
+          </ul>
+
+          <h1 id="servidor" class="mt-5">Servidor:</h1>
+          <hr>
+          <h2 id="modelos" class="mt-4">Modelos</h2>
+          <p>Texto explicativo</p>
+          <h3 id="modelo-usuario" class="mt-3">Modelo Usuario</h3>
+          <p>
+            El siguiente código define un esquema/clase de Mongoose para el
+            modelo "Usuario" en una base de datos de MongoDB.
+          </p>
+          <pre>
+<code>const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const passportLocalMongoose = require("passport-local-mongoose");
+
+// MODELO DE LA CLASE USUARIO EN LA BASE DE DATOS
+const usuarioSchema = new Schema(
+  {
+    dni: { type: Number },
+    nombre: { type: String },
+    apellido: { type: String },
+    email: { type: String },
+    rol: { default: "Estudiante", type: String },
+    activo: { type: Boolean, default: false },
+    comentarios: [{ type: Schema.Types.ObjectId, ref: "Comentario" }],
+    prestamos: [{ type: Schema.Types.ObjectId, ref: "Prestamo" }],
+    reservas: [{ type: Schema.Types.ObjectId, ref: "Reserva" }],
+  },
+  {
+    timestamps: true,
+  }
+);
+
+usuarioSchema.plugin(passportLocalMongoose); // PLUGIN DE PASSPORT PARA AUTENTICAR USUARIOS
+
+module.exports = mongoose.model("Usuario", usuarioSchema);</code>
+          </pre>
+
+          
+          <p>
+            Propiedades:
+            <ul>
+                <li>dni: DNI del usuario.</li>
+                <li>nombre: Nombre del usuario.</li>
+                <li>apellido: Apellido del usuario.</li>
+                <li>email: Email del usuario.</li>
+                <li>rol: Rol del usuario (por defecto, "Estudiante").</li>
+                <li>activo: Estado de actividad del usuario (por defecto, false).</li>
+                <li>comentarios: Array de referencias a comentarios hechos por el usuario.</li>
+                <li>prestamos: Array de referencias a préstamos hechos por el usuario.</li>
+                <li>reservas: Array de referencias a reservas hechas por el usuario</li>
+            </ul>
+          </p>
+
+          <hr>
+
+          <h3 id="modelo-libro" class="mt-4">Modelo Libro</h3>
+
+          <p>
+            El siguiente código define un esquema/clase de Mongoose para el
+            modelo "Libro" en una base de datos de MongoDB.
+          </p>
+
+<pre><code>const mongoose = require("mongoose");
+const prestamo = require("./prestamo");
+const Schema = mongoose.Schema;
+
+const schemaLibro = new Schema({
+    titulo: { type: String },
+    autor: { type: String },
+    categoria: { type: String },
+    copiaVirtual: { type: String }, // url de la copia virtual
+    copiasLibro: { type: Number },
+    comentarios: [{ type: Schema.Types.ObjectId, ref: "Comentario" }], // array de comentarios
+    descripcion: { type: String },
+    imagen: { type: String },
+    reservas: [{ type: Schema.Types.ObjectId, ref: "Reserva" }],
+    prestamos: [{ type: Schema.Types.ObjectId, ref: "Prestamo" }],
+});
+
+module.exports = mongoose.model("Libro", schemaLibro);</code></pre>
+
+<p>
+    Propiedades:
+<ul>
+    <li><b>titulo</b> Título del libro.</li>
+    <li><b>autor:</b> Autor del libro.</li>
+    <li><b>categoria:</b> Categoría del libro.</li>
+    <li><b>copiaVirtual:</b> URL de la copia virtual del libro.</li>
+    <li><b>copiasLibro:</b> Número de copias disponibles.</li>
+    <li><b>comentarios:</b> Array de referencias a comentarios asociados al libro.</li>
+    <li><b>descripcion:</b> Descripción del libro.</li>
+    <li><b>imagen:</b> URL de la imagen del libro.</li>
+    <li><b>reservas:</b> Array de referencias a reservas asociadas al libro.</li>
+    <li><b>prestamos:</b> Array de referencias a préstamos asociados al libro.</li>
+</ul>
+</p>
+<hr>
+
+<h3 id="modelo-comentario" class="mt-4">Modelo Comentario</h3>
+
+<p>
+    El siguiente código define un esquema/clase de Mongoose para el
+    modelo "Comentario" en una base de datos de MongoDB.
+</p>
+
+<pre><code>const moongose = require("mongoose");
+const Schema = moongose.Schema;
+
+const schemaPrestamo = new Schema({
+    idLibro: { type: Schema.Types.ObjectId, ref: "Libro" },
+    documento: { type: Schema.Types.ObjectId, ref: "Usuario" },
+    fechaDeInicio: { type: Date },
+    fechaDeFin: { type: Date },
+    fechaDevolucion: { type: Date },
+});
+
+module.exports = moongose.model("Prestamo", schemaPrestamo);</code></pre>
+
+<p>
+    Propiedades:
+<ul>
+    <li><b>titulo:</b> Título del libro.</li>
+    <li><b>autor:</b> Autor del libro.</li>
+    <li><b>categoria:</b> Categoría del libro.</li>
+    <li><b>copiaVirtual:</b> URL de la copia virtual del libro.</li>
+    <li><b>copiasLibro:</b> Número de copias disponibles.</li>
+    <li><b>comentarios:</b> Array de referencias a comentarios asociados al libro.</li>
+    <li><b>descripcion:</b> Descripción del libro.</li>
+    <li><b>imagen:</b> URL de la imagen del libro.</li>
+    <li><b>reservas:</b> Array de referencias a reservas asociadas al libro.</li>
+    <li><b>prestamos:</b> Array de referencias a préstamos asociados al libro.</li>
+</ul>
+</p>
+
+<hr>
+
+<h3 id="modelo-prestamo" class="mt-4">Modelo Prestamo</h3>
+
+<p>
+    El siguiente código define un esquema/clase de Mongoose para el
+    modelo "Prestamo" en una base de datos de MongoDB.
+</p>
+
+<pre><code>const moongose = require("mongoose");
+const Schema = moongose.Schema;
+
+const schemaPrestamo = new Schema({
+    idLibro: { type: Schema.Types.ObjectId, ref: "Libro" },
+    documento: { type: Schema.Types.ObjectId, ref: "Usuario" },
+    fechaDeInicio: { type: Date },
+    fechaDeFin: { type: Date },
+    fechaDevolucion: { type: Date },
+});
+
+module.exports = moongose.model("Prestamo", schemaPrestamo);</code></pre>
+
+<p>
+    Propiedades:
+    <ul>
+        <li><b>idLibro:</b> Referencia al libro prestado.</li>
+        <li><b>documento:</b> Referencia al usuario que hizo el préstamo.</li>
+        <li><b>fechaDeInicio:</b> Fecha de inicio del préstamo.</li>
+        <li><b>fechaDeFin:</b> Fecha de fin del préstamo.</li>
+        <li><b>fechaDevolucion:</b> Fecha de devolución del libro.</li>
+    </ul>
+</p>
+
+<hr>
+
+<h3 id="modelo-reserva" class="mt-4">Modelo Reserva</h3>
+<p>
+    El siguiente código define un esquema/clase de Mongoose para el
+    modelo "Reserva" en una base de datos de MongoDB.
+</p>
+
+<pre><code>const moongose = require("mongoose");
+const Schema = moongose.Schema;
+
+const schemaReserva = new Schema({
+    documento: { type: Schema.Types.ObjectId, ref: "Usuario" },
+    idLibro: { type: Schema.Types.ObjectId, ref: "Libro" },
+    fechaReserva: { type: Date },
+    fechaDevolucion: { type: Date },
+    estadoReserva: { type: Boolean, default: true },
+});
+
+module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
+
+<p>
+    Propiedades:
+    <ul>
+        <li><b>documento:</b> Referencia al usuario que hizo la reserva.</li>
+        <li><b>idLibro:</b> Referencia al libro reservado.</li>
+        <li><b>fechaReserva:</b> Fecha de la reserva.</li>
+        <li><b>fechaDevolucion:</b> Fecha de devolución de la reserva.</li>
+        <li><b>estadoReserva:</b> Estado de la reserva (por defecto, true).</li>
+    </ul>
+</p>
+
+<hr>
+
+<h2 id="controladores" class="mt-4">Controladores</h2>
+<hr>
+
+
+
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
