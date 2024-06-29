@@ -42,6 +42,12 @@
                     <li><a href="#modelo-reserva">Reserva</a></li>
                 </ul>
               <li><a href="#controladores">Controladores</a></li>
+              <ul>
+                <li><a href="#controlador-usuario">Controladores Usuario</a></li>
+                <ul>
+                    <li><a href="#controlador-usuario-crearUsuario">crearUsuario</a></li>
+                </ul>
+              </ul>
             </ul>
             <li>Cliente</li>
             <ul>
@@ -108,7 +114,7 @@
           </ul>
           
           <p>
-            Links a sus documentaciones: <a href="https://nodejs.org/en" target="_blank">NodeJS</a>, <a href="https://expressjs.com/es/" target="_blank">Expres</a>, <a href="https://www.mongodb.com/es" target="_blank">MongoDB</a>, <a href="https://mongoosejs.com/" target="_blank">Mongoose</a>,  <a href="https://www.passportjs.org/" target="_blank">PassportJS</a>,  <a href="https://joi.dev/" target="_blank">Joi</a>, <a href="https://www.npmjs.com/package/body-parser" target="_blank">Body Parser</a>, <a href="https://www.npmjs.com/package/express-session" target="_blank">Express Session</a>
+            Links a sus documentaciones: <a href="https://nodejs.org/en" target="_blank">NodeJS</a>, <a href="https://expressjs.com/es/" target="_blank">Express</a>, <a href="https://www.mongodb.com/es" target="_blank">MongoDB</a>, <a href="https://mongoosejs.com/" target="_blank">Mongoose</a>,  <a href="https://www.passportjs.org/" target="_blank">PassportJS</a>,  <a href="https://joi.dev/" target="_blank">Joi</a>, <a href="https://www.npmjs.com/package/body-parser" target="_blank">Body Parser</a>, <a href="https://www.npmjs.com/package/express-session" target="_blank">Express Session</a>
           </p>
           <h3 class="mt-3">Cliente:</h3>
           <ul>
@@ -334,9 +340,22 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 
 <h2 id="controladores" class="mt-4">Controladores</h2>
 <hr>
+<p>Uno de los elementos más importantes en un Servidor con una API REST hecha con NodeJS y ExpressJS es la creación de los controladores. Los controladores son responsables de procesar las solicitudes y respuestas del servidor, facilitando la comunicación entre el Cliente y el Servidor</p>
+<p>En los controladores se van a repetir frecuentemente los siguientes terminos, asi que vamos a explicarlos un poco.</p>
+<ul>
+  <li><b>req.body:</b> Este es un objeto dentro de la peticion que contiene los datos enviados desde el cliente en el cuerpo de la peticion HTTP (generalmente una solicitud POST/PUT)</li>
+  <li><b>req.params:</b> Es una propiedad de la peticion que nos permite capturar parametros o valores dinamicos de la URL.</li>
+</ul>
 
+<p><b>Async/Await</b>: El uso de async y await en JavaScript se utiliza para escribir código asíncrono de una manera más limpia y fácil de leer.</p>
+<p>La palabra clave async se utiliza antes de una función para indicar que esa función retornará una Promesa. Esto permite que la función se comporte de manera asíncrona, incluso si contiene operaciones sincrónicas y/o asíncronas. Cuando una función es declarada como async, automáticamente devuelve una Promesa.</p>
+<p>La palabra clave await se utiliza dentro de una función async para esperar a que una Promesa se resuelva antes de continuar con la ejecución del código. Esto significa que cuando se encuentra la palabra clave await, la ejecución del código se pausa hasta que la Promesa se resuelva, y luego se reanuda con el valor resuelto de la Promesa.</p>
 
-
+<hr>
+<h2 id="controlador-usuario" class="mt-4">Controladores de Usuario</h2>
+<p>En este apartado se definen los controladores para el manejo de los usuarios.</p>
+<hr>
+<h3 id="controlador-usuario-crearUsuario" class="mt-4">Controlador crearUsuario</h3>
 
         </div>
       </div>
