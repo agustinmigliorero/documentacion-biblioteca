@@ -57,7 +57,13 @@
                 </ul>
 
                 <li><a href="#controlador-libro">Controladores Libro</a></li>
-                <ul></ul>
+                <ul>
+                    <li><a href="#controlador-libro-crearLibro">crearLibro</a></li>
+                    <li><a href="#controlador-libro-buscarLibro">buscarLibro</a></li>
+                    <li><a href="#controlador-libro-verLibros">verLibros</a></li>
+                    <li><a href="#controlador-libro-editarLibro">editarLibro</a></li>
+                    <li><a href="#controlador-libro-eliminarLibro">eliminarLibro</a></li>
+                </ul>
 
               </ul>
             </ul>
@@ -93,6 +99,8 @@
             diseño y presentación desde el lado del cliente y los controladores
             contiene la lógica que actualiza el modelo y las vistas dependiendo
             del tipo de petición que realice el usuario.
+<br><br>
+            Link al repositorio: <b><a href="https://github.com/agustinmigliorero/Biblioteca-Practicas-Profesionalizantes">Repositorio GitHub</a></b>
           </p>
           <h2 class="mt-4">Tecnologías usadas en el proyecto</h2>
           <hr>
@@ -492,6 +500,107 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 };</code></pre>
 <p>En resumen, este código envía una respuesta JSON con un error indicando que el usuario o la contraseña son incorrectas.</p>
 <p>Nota: Al igual que el controlador loginUsuario, esta funcion solamente maneja la notificacion de error de inicio de sesión de un usuario y le envia al cliente el error en formato JSON, pero no se encarga de la autenticación del usuario, este proceso se realiza antes desde las rutas usando la libreria PassportJS.</p>
+
+<hr>
+
+<h2 id="controlador-libro" class="mt-4">Controladores de Libro</h2>
+<p>En este apartado se definen los controladores para el manejo de los libros.</p>
+
+<hr>
+
+<h3 id="controlador-libro-crearLibro" class="mt-4">Controlador crearLibro</h3>
+<p>Este código define una función crearLibro que se encarga de crear un nuevo libro en la base de datos.</p>
+<pre><code>const crearLibro = async (req, res) => {
+  const {
+    titulo,
+    autor,
+    categoria,
+    copiaVirtual,
+    copiasLibro,
+    descripcion,
+    imagen,
+    //copiasDisponibles,
+  } = req.body;
+  const libro = new Libro({
+    titulo,
+    autor,
+    categoria,
+    copiaVirtual,
+    copiasLibro,
+    descripcion,
+    imagen,
+    //copiasDisponibles,
+  });
+  await libro.save();
+  res.json({ mensaje: "Libro creado" });
+};</code></pre>
+
+<p>En resumen, este código recibe los datos de un nuevo libro en la peticion del cliente, crea un documento de libro con esos datos, lo guarda en la base de datos y luego responde con un mensaje indicando que el libro ha sido creado con éxito.</p>
+
+<hr>
+<h3 id="controlador-libro-buscarLibro" class="mt-4">Controlador buscarLibro</h3>
+<p>Este código define una función buscarLibro que se encarga de buscar un libro en la base de datos utilizando su ID y devolver los datos del libro, así como también los comentarios y reservas asociados a ese libro.</p>
+<pre><code>const buscarLibro = async (req, res) => {
+  const { id } = req.params;
+  const libro = await Libro.findById(id)
+    .populate({
+      path: "comentarios",
+      populate: { path: "documento" },
+    })
+    .populate({ path: "reservas", populate: { path: "documento" } });
+  res.json(libro);
+};</code></pre>
+<p>En resumen, este código busca un libro en la base de datos utilizando su ID, esta llega desde los parametros de la peticion en la URL, luego carga los comentarios y reservas con los datos correspondientes y termina enviando una respuesta JSON con los datos del libro, incluyendo los comentarios y reservas asociados.</p>
+
+<hr>
+<h3 id="controlador-libro-verLibros" class="mt-4">Controlador verLibros</h3>
+<p>Este código define una función verLibros que se encarga de obtener todos los libros de la base de datos y devolverlos en una respuesta JSON.</p>
+<pre><code>const verLibros = async (req, res) => {
+  const libros = await Libro.find();
+  res.json(libros);
+};</code></pre>
+<p>En resumen, este código obtiene todos los libros de la base de datos utilizando el método find del modelo Libro y luego envía una respuesta JSON con los datos de todos los libros.</p>
+
+<hr>
+<h3 id="controlador-libro-modificarLibro" class="mt-4">Controlador modificarLibro</h3>
+<p>Este código define una función modificarLibro que se encarga de actualizar los datos de un libro en la base de datos</p>
+<pre><code>const modificarLibro = async (req, res) => {
+  const { id } = req.params;
+  const {
+    titulo,
+    autor,
+    categoria,
+    copiaVirtual,
+    copiasLibro,
+    descripcion,
+    imagen,
+    //copiasDisponibles,
+  } = req.body;
+  const libro = await Libro.findByIdAndUpdate(id, {
+    titulo,
+    autor,
+    categoria,
+    copiaVirtual,
+    copiasLibro,
+    descripcion,
+    imagen,
+    //copiasDisponibles,
+  });
+  res.json({ mensaje: "Libro modificado", libro });
+};</code></pre>
+<p>En resumen, este código permite modificar un libro en la base de datos. Utiliza la ID proporcionada en los parametros de la peticion (URL) para buscarlo, y luego usa los nuevos datos enviados en la solicitud HTTP para modificarlo. Termina respondiendo con un mensaje de éxito y el libro actualizado.</p>
+
+<hr>
+<h3 id="controlador-libro-eliminarLibro" class="mt-4">Controlador eliminarLibro</h3>
+<p>Este código define una función eliminarLibro que se encarga de eliminar un libro de la base de datos.</p>
+<pre><code>const eliminarLibro = async (req, res) => {
+  const { id } = req.params;
+  const libro = await Libro.findByIdAndDelete(id);
+  res.json({ mensaje: "Libro eliminado", libro });
+};</code></pre>
+<p>En resumen, este código elimina un libro de la base de datos utilizando el ID proporcionado en los parametros de la peticion (URL) y luego responde con un mensaje indicando que el libro ha sido eliminado exitosamente, junto con los datos del libro eliminado.</p>
+
+<hr>
 </div>
       </div>
     </div>
