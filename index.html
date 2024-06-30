@@ -29,7 +29,7 @@
     <h1 style="text-align: center" class="mb-5">Documentación del sistema</h1>
     <div class="container">
       <div class="row">
-        <div class="col-sm-3 col-12">
+        <div class="col-sm-3 col-12 sticky">
           <ul>
             <li><a href="#servidor">Servidor</a></li>
             <ul>
@@ -46,7 +46,19 @@
                 <li><a href="#controlador-usuario">Controladores Usuario</a></li>
                 <ul>
                     <li><a href="#controlador-usuario-crearUsuario">crearUsuario</a></li>
+                    <li><a href="#controlador-usuario-buscarUsuario">buscarUsuario</a></li>
+                    <li><a href="#controlador-usuario-verUsuarios">verUsuarios</a></li>
+                    <li><a href="#controlador-usuario-editarUsuario">editarUsuario</a></li>
+                    <li><a href="#controlador-usuario-eliminarUsuario">eliminarUsuario</a></li>
+                    <li><a href="#controlador-usuario-loginUsuario">loginUsuario</a></li>
+                    <li><a href="#controlador-usuario-desconectarUsuario">desconectarUsuario</a></li>
+                    <li><a href="#controlador-usuario-usuarioLogeado">usuarioLogeado</a></li>
+                    <li><a href="#controlador-usuario-errorLogin">errorLogin</a></li>
                 </ul>
+
+                <li><a href="#controlador-libro">Controladores Libro</a></li>
+                <ul></ul>
+
               </ul>
             </ul>
             <li>Cliente</li>
@@ -356,8 +368,131 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 <p>En este apartado se definen los controladores para el manejo de los usuarios.</p>
 <hr>
 <h3 id="controlador-usuario-crearUsuario" class="mt-4">Controlador crearUsuario</h3>
+<p>El siguiente código define una función crearUsuario que maneja la creación de un nuevo usuario en la aplicación.</p>
+<pre><code>const crearUsuario = async (req, res) => {
+// METODO PARA CREAR UN NUEVO USUARIO
+  const { dni, nombre, apellido, email, password } = req.body; // SE OBTIENEN LOS DATOS DEL CUERPO DE LA PETICION
+  const usuario = new Usuario({
+    dni,
+    nombre,
+    apellido,
+    email,
+    password,
+    username: dni,
+  });
 
-        </div>
+  const nuevoUsuario = await Usuario.register(usuario, password);
+
+  const usuarioCreado = await Usuario.findOne({ username: dni });
+
+  req.login(usuarioCreado, (err) => {
+    if (err) {
+      return next(err);
+    }
+    res.json({ logeado: true, usuario: nuevoUsuario });
+  });
+};</code></pre>
+<p>En resumen el código anterior maneja la creación de un nuevo usuario en la base de datos, luego registra y autentica al usuario creado. Finalmente, envía una respuesta en formato JSON con el estado de inicio de sesión y los detalles del usuario recién creado.</p>
+<hr>
+<h3 id="controlador-usuario-buscarUsuario" class="mt-4">Controlador buscarUsuario</h3>
+<p>El siguiente código define una función buscarUsuario que maneja la buqueda de un usuario en la aplicación.</p>
+<pre><code>const buscarUsuario = async (req, res) => {
+  const { id } = req.params;
+  const usuario = await Usuario.findById(id)
+    .populate({
+      path: "comentarios",
+      populate: { path: "idLibro" },
+    })
+    .populate({ path: "reservas", populate: { path: "idLibro" } })
+    .populate({ path: "prestamos", populate: { path: "idLibro" } });
+  res.json(usuario);
+};</code></pre>
+<p>En resumen, este código busca un usuario en la base de datos utilizando el ID proporcionado, luego rellena los campos relacionados del usuario con los documentos correspondientes en otras colecciones de la base de datos (comentarios, reservas y prestamos) y finalmente envía una respuesta JSON con el objeto del usuario encontrado.</p>
+
+<hr>
+<h3 id="controlador-usuario-verUsuarios" class="mt-4">Controlador verUsuarios</h3>
+<p>El siguiente código define una función verUsuarios que maneja la consulta de todos los usuarios en la base de datos y devuelve una respuesta JSON con la lista de usuarios encontrados.</p>
+<pre><code>const verUsuarios = async (req, res) => {
+  const usuarios = await Usuario.find();
+  res.json(usuarios);
+};</code></pre>
+<p>En resumen, este código busca y recupera todos los usuarios almacenados en la base de datos utilizando el modelo Usuario y luego envía una respuesta JSON con la lista de usuarios encontrados.</p>
+
+<hr>
+<h3 id="controlador-usuario-editarUsuario" class="mt-4">Controlador editarUsuario</h3>
+<p>El siguiente código define una función editarUsuario que maneja la actualización de un usuario en la base de datos.</p>
+<pre><code>const editarUsuario = async (req, res) => {
+  const { id } = req.params;
+  const { nombre, apellido, email, password, rol, activo } = req.body;
+  const usuario = await Usuario.findByIdAndUpdate(id, {
+    nombre,
+    apellido,
+    email,
+    password,
+    rol,
+    activo,
+  });
+  res.json({ mensaje: "Usuario actualizado", usuario });
+};</code></pre>
+<p>En resumen, este código busca un usuario en la base de datos utilizando el ID proporcionado en los parametros de la URL, luego actualiza los campos del usuario con los nuevos datos extraidos del cuerpo de la peticion y finalmente envía una respuesta JSON con un mensaje de confirmación y el objeto del usuario actualizado.</p>
+
+<hr>
+<h3 id="controlador-usuario-eliminarUsuario" class="mt-4">Controlador eliminarUsuario</h3>
+<p>El siguiente código define una función eliminarUsuario que se encarga de eliminar un usuario de la base de datos, así como también eliminar los comentarios y reservas asociados a ese usuario.</p>
+<pre><code>const eliminarUsuario = async (req, res) => {
+  const { id } = req.params;
+  const usuario = await Usuario.findByIdAndDelete(id);
+  await Comentario.deleteMany({ documento: id });
+  await Reserva.deleteMany({ documento: id });
+  res.json({ mensaje: "Usuario eliminado", usuario });
+};</code></pre>
+<p>En resumen, este código elimina un usuario de la base de datos, también elimina los comentarios y reservas asociados a ese usuario utilizando el metodo deleteMany. Luego envía una respuesta JSON confirmando la eliminación del usuario.</p>
+
+<hr>
+<h3 id="controlador-usuario-loginUsuario" class="mt-4">Controlador loginUsuario</h3>
+<p>Este código define una función loginUsuario que maneja la notificacion de inicio de sesión de un usuario.</p>
+<pre><code>const loginUsuario = async (req, res) => {
+  const { username } = req.body;
+  const usuario = await Usuario.findOne({ username });
+  res.json({ logeado: true, usuario: usuario });
+};</code></pre>
+<p>En resumen, este código busca un usuario en la base de datos basándose en el nombre de usuario proporcionado en la solicitud de inicio de sesión (username/DNI), y luego envía una respuesta JSON indicando que el usuario ha iniciado sesión correctamente, junto con los datos del usuario encontrado.</p>
+<p>Nota: Esta funcion solamente maneja la notificacion de inicio de sesión de un usuario y le envia al cliente la informacion del usuario logeado en formato JSON, pero no se encarga de la autenticación del usuario, este proceso se realiza antes desde las rutas usando la libreria PassportJS.</p>
+
+<hr>
+<h3 id="controlador-usuario-desconectarUsuario" class="mt-4">Controlador desconectarUsuario</h3>
+<p>Este código define una función desconectarUsuario que maneja la desconexión de un usuario con un inicio de sesion activo.</p>
+<pre><code>const desconectarUsuario = async (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.json({ logeado: false });
+  });
+};</code></pre>
+<p>En resumen, este código finaliza la sesión del usuario utilizando el método logout de la libreria PassportJS y envía una respuesta JSON indicando que el usuario ha sido desconectado correctamente.</p>
+
+<hr>
+<h3 id="controlador-usuario-usuarioLogeado" class="mt-4">Controlador usuarioLogeado</h3>
+<p>Este código define una función usuarioLogeado que maneja la verificación de si un usuario está actualmente autenticado con una sesion activa o no.</p>
+<pre><code>const usuarioLogeado = async (req, res) => {
+  if (req.user) {
+    res.json({ logeado: true, usuario: req.user });
+  } else {
+    res.json({ logeado: false });
+  }
+};</code></pre>
+<p>En resumen, este código verifica si el usuario está autenticado o no utilizando el objeto req.user proporcionado por PassportJS. Si el usuario está autenticado, envía una respuesta JSON indicando que el usuario está autenticado y devuelve los datos del usuario autenticado. Si el usuario no está autenticado, envía una respuesta JSON indicando que el usuario no está autenticado.</p>
+
+<hr>
+<h3 id="controlador-usuario-errorLogin" class="mt-4">Controlador errorLogin</h3>
+<p>Este código define una función errorLogin que maneja la notificacion de error de inicio de sesión de un usuario.</p>
+<pre><code>const errorLogin = async (req, res) => {
+  res.status(401).json({ error: true, msg: "Usuario o contraseña incorrecta" });
+};</code></pre>
+<p>En resumen, este código envía una respuesta JSON con un error indicando que el usuario o la contraseña son incorrectas.</p>
+<p>Nota: Al igual que el controlador loginUsuario, esta funcion solamente maneja la notificacion de error de inicio de sesión de un usuario y le envia al cliente el error en formato JSON, pero no se encarga de la autenticación del usuario, este proceso se realiza antes desde las rutas usando la libreria PassportJS.</p>
+</div>
       </div>
     </div>
   </body>
