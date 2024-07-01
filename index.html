@@ -67,8 +67,22 @@
                 <li><a href="#controlador-comentario">Controladores Comentario</a></li>
                 <ul>
                   <li><a href="#controlador-comentarios-crearComentario">crearComentario</a></li>
+                  <li><a href="#controlador-comentarios-verComentario">verComentario</a></li>
+                  <li><a href="#controlador-comentarios-modificarComentario">modificarComentario</a></li>
+                  <li><a href="#controlador-comentarios-eliminarComentario">eliminarComentario</a></li>
                 </ul>
-
+                <li><a href="#controlador-reserva">Controladores Reserva</a></li>
+                <ul></ul>
+                <li><a href="#controlador-prestamo">Controladores Prestamo</a></li>
+                <ul></ul>
+              </ul>
+              <li><a href="#rutas">Rutas</a></li>
+              <ul>
+                <li><a href="#rutas-usuario">Rutas Usuario</a></li>
+                <li><a href="#rutas-libro">Rutas Libro</a></li>
+                <li><a href="#rutas-comentario">Rutas Comentario</a></li>
+                <li><a href="#rutas-reserva">Rutas Reserva</a></li>
+                <li><a href="#rutas-prestamo">Rutas Prestamo</a></li>
               </ul>
             </ul>
             <li>Cliente</li>
@@ -705,7 +719,7 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 
 
 <hr>
-<h3 id="controlador-rutas-usuario" class="mt-4">Rutas de Usuario </h3>
+<h3 id="rutas-usuario" class="mt-4">Rutas de Usuario </h3>
 <p>El siguiente código define un router para gestionar las rutas relacionadas con los usuarios en una aplicación utilizando Express.js. Define varias rutas para manejar operaciones CRUD y autenticación de usuarios en una aplicación Express.js. Utiliza middleware para validación, manejo de errores y autenticación.</p>
 
 <pre><code>const routerUsuarios = require("express").Router();
@@ -756,7 +770,7 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 
 <p>Las rutas creadas son las siguientes:</p>
 <ul>
-  <li>La ruta (“/”) escucha peticiones de métodos (HTTP) GET y POST. Una petición del metodo GET va a ejecutar el controlador verUsuarios y el POST ejecuta el controlador crearUsuario.</li>
+  <li>La ruta (“/”) escucha peticiones de metodos GET y POST. Una petición del metodo GET va a ejecutar el controlador verUsuarios y el POST ejecuta el controlador crearUsuario.</li>
   <li>La ruta (/iniciar-sesion) va a escuchar peticiones POST. Mediante la función “authenticate” de Passport va a realizar la autenticación del usuario y, si falla, redirige al usuario a la ruta “/api/usuarios/error-login”.</li>
   <li>Ruta (“/desconectarse”) escucha peticiones de métodos GET. La petición del metodo GET va a ejecutar el controlador desconectarUsuario.</li>
   <li>Ruta (“/usuario-logeado”) escucha peticiones de métodos GET. La petición del metodo GET va a ejecutar el controlador usuarioLogeado.</li>
@@ -765,7 +779,7 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 </ul>
 
 <hr>
-<h3 id="controlador-rutas-libro" class="mt-4">Rutas de Libro </h3>
+<h3 id="rutas-libro" class="mt-4">Rutas de Libro </h3>
 <p>El siguiente código define un router para gestionar las rutas relacionadas con los libros en una aplicación utilizando Express.js. Define varias rutas para manejar operaciones CRUD de libros en una aplicación Express.js. Utiliza middlewares para validación, manejo de errores, etc.</p>
 <pre><code>const routerLibro = require("express").Router();
   const {
@@ -803,7 +817,7 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 </ul>
 
 <hr>
-<h3 id="controlador-rutas-comentario" class="mt-4">Rutas de Comentario </h3>
+<h3 id="rutas-comentario" class="mt-4">Rutas de Comentario </h3>
 <p>El siguiente código define un router para gestionar las rutas relacionadas con los comentarios en una aplicación utilizando Express.js. Define varias rutas para manejar operaciones CRUD de comentarios en una aplicación Express.js. Utiliza middlewares para validación, manejo de errores, etc.</p>
 <pre><code>const routerComentario = require("express").Router();
   const {
@@ -834,12 +848,12 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 
   <p>Las rutas creadas son las siguientes:</p>
   <ul>
-    <li>La ruta (“/”) escucha peticiones de métodos (HTTP) POST. Una petición del metodo POST ejecuta el controlador crearComentario.</li>
+    <li>La ruta (“/”) escucha peticiones de métodos POST. Una petición del metodo POST ejecuta el controlador crearComentario.</li>
     <li>Ruta (“/:id”) va a escuchar peticiones de métodos GET, PUT y DELETE. La petición del metodo GET va a ejecutar el controlador verComentario, la petición del metodo PUT va a ejecutar el controlador modificarComentario y la petición del metodo DELETE va a ejecutar el controlador elminarComentario.</li>
   </ul>
 
 <hr>
-<h3 id="controlador-rutas-reserva" class="mt-4">Rutas de Reserva </h3>
+<h3 id="rutas-reserva" class="mt-4">Rutas de Reserva </h3>
 <p>El siguiente código define un router para gestionar las rutas relacionadas con las reservas en una aplicación utilizando Express.js. Define varias rutas para manejar operaciones CRUD de reserva en una aplicación Express.js. Utiliza middlewares para validación, manejo de errores, etc.</p>
 <pre><code>const RouterReservas = require("express").Router();
   const {
@@ -866,12 +880,12 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
   module.exports = RouterReservas;</code></pre>
 <p>Las rutas creadas son las siguientes:</p>
 <ul>
-  <li>La ruta (“/”) escucha peticiones de métodos (HTTP) POST y GET. Una petición del metodo POST ejecuta el controlador crearReserva y una petición del metodo GET ejecuta el controlador verReservas.</li>
+  <li>La ruta (“/”) escucha peticiones de métodos POST y GET. Una petición del metodo POST ejecuta el controlador crearReserva y una petición del metodo GET ejecuta el controlador verReservas.</li>
   <li>Ruta (“/:id”) va a escuchar peticiones de métodos GET, PUT y DELETE. La petición del metodo GET va a ejecutar el controlador verReserva, la petición del metodo PUT va a ejecutar el controlador editarReserva y la petición del metodo DELETE va a ejecutar el controlador elminarReserva.</li>
 </ul>
 
 <hr>
-<h3 id="controlador-rutas-prestamo" class="mt-4">Rutas de Prestamo </h3>
+<h3 id="rutas-prestamo" class="mt-4">Rutas de Prestamo </h3>
 <p>El siguiente código define un router para gestionar las rutas relacionadas con los préstamos en una aplicación utilizando Express.js. Define varias rutas para manejar operaciones CRUD de préstamos en una aplicación Express.js. Utiliza middlewares para validación, manejo de errores, etc.</p>
 <pre><code>const RouterPrestamos = require("express").Router();
   const {
@@ -898,7 +912,7 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
   module.exports = RouterPrestamos;</code></pre>
 <p>Las rutas creadas son las siguientes:</p>
 <ul>
-  <li>La ruta (“/”) escucha peticiones de métodos (HTTP) POST y GET. Una petición del metodo POST ejecuta el controlador crearPrestamo y una petición del metodo GET ejecuta el controlador verPrestamos.</li>
+  <li>La ruta (“/”) escucha peticiones de métodos POST y GET. Una petición del metodo POST ejecuta el controlador crearPrestamo y una petición del metodo GET ejecuta el controlador verPrestamos.</li>
   <li>Ruta (“/:id”) va a escuchar peticiones de métodos GET, PUT y DELETE. La petición del metodo GET va a ejecutar el controlador verPrestamo, la petición del metodo PUT va a ejecutar el controlador editarPrestamo y la petición del metodo DELETE va a ejecutar el controlador elminarPrestamo.</li>
 </ul>
 
@@ -910,6 +924,56 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 
 <p><b>Joi:</b> Es una biblioteca de validación de esquemas en JavaScript que se utiliza comúnmente en el contexto de validaciones de datos en bases de datos. <br>
 <b>Required():</b> Es un metodo de de Joi que se utiliza para indicar que un campo es obligatorio.</p>
+
+<hr>
+<h3 id="controlador-esquemas-esquemaUsuario" class="mt-4">esquemaUsuario </h3>
+<p>El siguiente código define un esquema de validación para los datos que debe contener un usuario para ser creado.</p>
+<pre><code>const esquemaUsuario = Joi.object({
+  dni: Joi.number().required(),
+  nombre: Joi.string().required(),
+  apellido: Joi.string().required(),
+  email: Joi.string().email().required(),
+  rol: Joi.string(),
+  password: Joi.string().required(),
+  activo: Joi.boolean(),
+});</code></pre>
+<p>
+  Campos:
+  <ul>
+    <li><b>dni:</b> Numero, requerido.</li>
+    <li><b>nombre:</b> Cadena de texto, requerido.</li>
+    <li><b>apellido:</b> Cadena de texto, requerido.</li>
+    <li><b>email:</b> Cadena de texto con formato de email, requerido.</li>
+    <li><b>rol:</b> Cadena de texto.</li>
+    <li><b>password:</b> Cadena de texto, requerido.</li>
+    <li><b>activo:</b> Booleano.</li>
+  </ul>
+</p>
+
+<hr>
+<h3 id="controlador-esquemas-esquemaEditarUsuario" class="mt-4">esquemaEditarUsuario </h3>
+<p>El siguiente código define un esquema de validación para los datos que debe contener un usuario para ser modificado.</p>
+<pre><code>const esquemaEditarUsuario = Joi.object({
+  dni: Joi.number(),
+  nombre: Joi.string().required(),
+  apellido: Joi.string().required(),
+  email: Joi.string().email().required(),
+  rol: Joi.string(),
+  password: Joi.string(),
+  activo: Joi.boolean(),
+});</code></pre>
+<p>
+  Campos:
+  <ul>
+    <li><b>dni:</b> Numero.</li>
+    <li><b>nombre:</b> Cadena de texto, requerido.</li>
+    <li><b>apellido:</b> Cadena de texto, requerido.</li>
+    <li><b>email:</b> Cadena de texto con formato de email, requerido.</li>
+    <li><b>rol:</b> Cadena de texto.</li>
+    <li><b>password:</b> Cadena de texto.</li>
+    <li><b>activo:</b> Booleano.</li>
+  </ul>
+</p>
 
 </div>
       </div>
