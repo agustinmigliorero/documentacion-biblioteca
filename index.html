@@ -84,6 +84,19 @@
                 <li><a href="#rutas-reserva">Rutas Reserva</a></li>
                 <li><a href="#rutas-prestamo">Rutas Prestamo</a></li>
               </ul>
+              <li><a href="#esquemas-validaciones">Esquemas para Validaciones</a></li>
+              <ul>
+                <li><a href="#esquemas-esquemaUsuario">esquemaUsuario</a></li>
+                <li><a href="#esquemas-esquemaEditarUsuario">esquemaEditarUsuario</a></li>
+                <li><a href="#esquemas-esquemaLibro">esquemaLibro</a></li>
+                <li><a href="#esquemas-esquemaModificarLibro">esquemaModificarLibro</a></li>
+                <li><a href="#esquemas-esquemaComentario">esquemaComentario</a></li>
+                <li><a href="#esquemas-esquemaModificarComentario">esquemaModificarComentario</a></li>
+                <li><a href="#esquemas-esquemaReserva">esquemaReserva</a></li>
+                <li><a href="#esquemas-esquemaEditarReserva">esquemaEditarReserva</a></li>
+                <li><a href="#esquemas-esquemaPrestamo">esquemaPrestamo</a></li>
+                <li><a href="#esquemas-esquemaEditarPrestamo">esquemaEditarPrestamo</a></li>
+              </ul>
             </ul>
             <li>Cliente</li>
             <ul>
@@ -926,7 +939,7 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 <b>Required():</b> Es un metodo de de Joi que se utiliza para indicar que un campo es obligatorio.</p>
 
 <hr>
-<h3 id="controlador-esquemas-esquemaUsuario" class="mt-4">esquemaUsuario </h3>
+<h3 id="esquemas-esquemaUsuario" class="mt-4">esquemaUsuario </h3>
 <p>El siguiente código define un esquema de validación para los datos que debe contener un usuario para ser creado.</p>
 <pre><code>const esquemaUsuario = Joi.object({
   dni: Joi.number().required(),
@@ -951,7 +964,7 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 </p>
 
 <hr>
-<h3 id="controlador-esquemas-esquemaEditarUsuario" class="mt-4">esquemaEditarUsuario </h3>
+<h3 id="esquemas-esquemaEditarUsuario" class="mt-4">esquemaEditarUsuario </h3>
 <p>El siguiente código define un esquema de validación para los datos que debe contener un usuario para ser modificado.</p>
 <pre><code>const esquemaEditarUsuario = Joi.object({
   dni: Joi.number(),
@@ -972,6 +985,182 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
     <li><b>rol:</b> Cadena de texto.</li>
     <li><b>password:</b> Cadena de texto.</li>
     <li><b>activo:</b> Booleano.</li>
+  </ul>
+</p>
+
+<hr>
+<h3 id="esquemas-esquemaLibro" class="mt-4">esquemaLibro </h3>
+<p>El siguiente código define un esquema de validación para los datos que debe contener un libro para ser creado.</p>
+<pre><code>const esquemaLibro = Joi.object({
+  titulo: Joi.string().required(),
+  autor: Joi.string().required(),
+  categoria: Joi.string().required(),
+  copiaVirtual: Joi.string().required(),
+  copiasLibro: Joi.number().min(0).required(),
+  comentarios: Joi.array(),
+  descripcion: Joi.string().required(),
+  imagen: Joi.string(),
+});</code></pre>
+<p>
+  Campos:
+  <ul>
+    <li><b>titulo:</b> Cadena de texto, requerido.</li>
+    <li><b>autor:</b> Cadena de texto, requerido.</li>
+    <li><b>categoria:</b> Cadena de texto, requerido.</li>
+    <li><b>copiaVirtual:</b> Cadena de texto, requerido.</li>
+    <li><b>copiasLibro:</b> Numero mayor o igual a 0, requerido.</li>
+    <li><b>comentarios:</b> Array. (de IDs)</li>
+    <li><b>descripcion:</b> Cadena de texto, requerido.</li>
+    <li><b>imagen:</b> Cadena de texto. (URL)</li>
+  </ul>
+</p>
+
+<hr>
+<h3 id="esquemas-esquemaModificarLibro" class="mt-4">esquemaModificarLibro </h3>
+<p>El siguiente código define un esquema de validación para los datos que debe contener un libro para ser modificado.</p>
+<pre><code>const esquemaModificarLibro = Joi.object({
+  titulo: Joi.string().required(),
+  autor: Joi.string().required(),
+  categoria: Joi.string().required(),
+  copiaVirtual: Joi.string(),
+  copiasLibro: Joi.number().required(),
+  comentarios: Joi.array(),
+  descripcion: Joi.string().required(),
+  imagen: Joi.string(),
+});</code></pre>
+<p>
+  Campos:
+  <ul>
+    <li><b>titulo:</b> Cadena de texto, requerido.</li>
+    <li><b>autor:</b> Cadena de texto, requerido.</li>
+    <li><b>categoria:</b> Cadena de texto, requerido.</li>
+    <li><b>copiaVirtual:</b> Cadena de texto.</li>
+    <li><b>copiasLibro:</b> Numero, requerido.</li>
+    <li><b>comentarios:</b> Array. (de IDs)</li>
+    <li><b>descripcion:</b> Cadena de texto, requerido.</li>
+    <li><b>imagen:</b> Cadena de texto. (URL)</li>
+  </ul>
+</p>
+
+<hr>
+<h3 id="esquemas-esquemaComentario" class="mt-4">esquemaComentario</h3>
+<p>El siguiente código define un esquema de validación para los datos que debe contener un comentario para ser creado.</p>
+<pre><code>const esquemaComentario = Joi.object({
+  idLibro: Joi.string().required(),
+  documento: Joi.string().required(),
+  textoComentario: Joi.string().required(),
+  puntuacion: Joi.number().required(),
+});</code></pre>
+<p>
+  Campos:
+  <ul>
+    <li><b>idLibro:</b> Cadena de texto, requerido.</li>
+    <li><b>documento:</b> Cadena de texto, requerido.</li>
+    <li><b>textoComentario:</b> Cadena de texto, requerido.</li>
+    <li><b>puntuacion:</b> Numero, requerido.</li>
+  </ul>
+</p>
+
+<hr>
+<h3 id="esquemas-esquemaModificarComentario" class="mt-4">esquemaModificarComentario</h3>
+<p>El siguiente código define un esquema de validación para los datos que debe contener un comentario para ser modificado.</p>
+<pre><code>const esquemaModificarComentario = Joi.object({
+  idLibro: Joi.string(),
+  documento: Joi.string(),
+  textoComentario: Joi.string().required(),
+  puntuacion: Joi.number().required(),
+});</code></pre>
+<p>
+  Campos:
+  <ul>
+    <li><b>idLibro:</b> Cadena de texto.</li>
+    <li><b>documento:</b> Cadena de texto.</li>
+    <li><b>textoComentario:</b> Cadena de texto, requerido.</li>
+    <li><b>puntuacion:</b> Numero, requerido.</li>
+  </ul>
+</p>
+
+<hr>
+<h3 id="esquemas-esquemaReserva" class="mt-4">esquemaReserva</h3>
+<p>El siguiente código define un esquema de validación para los datos que debe contener una reserva para ser creada.</p>
+<pre><code>const esquemaReserva = Joi.object({
+  idLibro: Joi.string().required(),
+  documento: Joi.string().required(),
+  fechaReserva: Joi.date().required(),
+  fechaDevolucion: Joi.date().required(),
+  estadoReserva: Joi.boolean(),
+});</code></pre>
+<p>
+  Campos:
+  <ul>
+    <li><b>idLibro:</b> Cadena de texto, requerido.</li>
+    <li><b>documento:</b> Cadena de texto, requerido.</li>
+    <li><b>fechaReserva:</b> Fecha, requerido.</li>
+    <li><b>fechaDevolucion:</b> Fecha, requerido.</li>
+    <li><b>estadoReserva:</b> Booleano.</li>
+  </ul>
+</p>
+
+<hr>
+<h3 id="esquemas-esquemaEditarReserva" class="mt-4">esquemaEditarReserva</h3>
+<p>El siguiente código define un esquema de validación para los datos que debe contener una reserva para ser modificada.</p>
+<pre><code>const esquemaEditarReserva = Joi.object({
+  idLibro: Joi.string(),
+  documento: Joi.string(),
+  fechaReserva: Joi.date().required(),
+  fechaDevolucion: Joi.date().required(),
+  estadoReserva: Joi.boolean(),
+});</code></pre>
+<p>
+  Campos:
+  <ul>
+    <li><b>idLibro:</b> Cadena de texto.</li>
+    <li><b>documento:</b> Cadena de texto.</li>
+    <li><b>fechaReserva:</b> Fecha, requerido.</li>
+    <li><b>fechaDevolucion:</b> Fecha, requerido.</li>
+    <li><b>estadoReserva:</b> Booleano.</li>
+  </ul>
+</p>
+
+<hr>
+<h3 id="esquemas-esquemaPrestamo" class="mt-4">esquemaPrestamo</h3>
+<p>El siguiente código define un esquema de validación para los datos que debe contener un prestamo para ser creado.</p>
+<pre><code>const esquemaPrestamo = Joi.object({
+  idLibro: Joi.string().required(),
+  documento: Joi.string().required(),
+  fechaDeInicio: Joi.date().required(),
+  fechaDeFin: Joi.date().required(),
+  fechaDevolucion: Joi.boolean(),
+});</code></pre>
+<p>
+  Campos:
+  <ul>
+    <li><b>idLibro:</b> Cadena de texto, requerido.</li>
+    <li><b>documento:</b> Cadena de texto, requerido.</li>
+    <li><b>fechaDeInicio:</b> Fecha, requerido.</li>
+    <li><b>fechaDeFin:</b> Fecha, requerido.</li>
+    <li><b>fechaDevolucion:</b> Booleano.</li>
+  </ul>
+</p>
+
+<hr>
+<h3 id="esquemas-esquemaEditarPrestamo" class="mt-4">esquemaEditarPrestamo</h3>
+<p>El siguiente código define un esquema de validación para los datos que debe contener un prestamo para ser modificado.</p>
+<pre><code>const esquemaEditarPrestamo = Joi.object({
+  idLibro: Joi.string(),
+  documento: Joi.string(),
+  fechaDeInicio: Joi.date().required(),
+  fechaDeFin: Joi.date().required(),
+  fechaDevolucion: Joi.boolean(),
+});</code></pre>
+<p>
+  Campos:
+  <ul>
+    <li><b>idLibro:</b> Cadena de texto.</li>
+    <li><b>documento:</b> Cadena de texto.</li>
+    <li><b>fechaDeInicio:</b> Fecha, requerido.</li>
+    <li><b>fechaDeFin:</b> Fecha, requerido.</li>
+    <li><b>fechaDevolucion:</b> Booleano.</li>
   </ul>
 </p>
 
