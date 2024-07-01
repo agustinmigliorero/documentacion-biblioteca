@@ -64,6 +64,10 @@
                     <li><a href="#controlador-libro-editarLibro">editarLibro</a></li>
                     <li><a href="#controlador-libro-eliminarLibro">eliminarLibro</a></li>
                 </ul>
+                <li><a href="#controlador-comentario">Controladores Comentario</a></li>
+                <ul>
+                  <li><a href="#controlador-comentarios-crearComentario">crearComentario</a></li>
+                </ul>
 
               </ul>
             </ul>
@@ -601,6 +605,312 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 <p>En resumen, este código elimina un libro de la base de datos utilizando el ID proporcionado en los parametros de la peticion (URL) y luego responde con un mensaje indicando que el libro ha sido eliminado exitosamente, junto con los datos del libro eliminado.</p>
 
 <hr>
+<h2 id="controlador-comentario" class="mt-4">Controladores de Comentario</h2>
+<p>En este apartado se definen los controladores para el manejo de los comentarios.</p>
+
+<hr>
+<h3 id="controlador-comentarios-crearComentario" class="mt-4">Controlador crearComentario</h3>
+<p>Este código define una función crearComentario que se encarga de crear un nuevo comentario y asociarlo a un libro y a un usuario en la base de datos.</p>
+<pre><code>const crearComentario = async (req, res) => {
+  const { idLibro, documento, textoComentario, puntuacion } = req.body;
+  const comentario = new Comentario({
+    idLibro,
+    documento,
+    textoComentario,
+    puntuacion,
+  });
+  await comentario.save();
+  await Libro.findByIdAndUpdate(idLibro, {
+    $push: { comentarios: comentario._id },
+  });
+  await Usuario.findByIdAndUpdate(documento, {
+    $push: { comentarios: comentario._id },
+  });
+  res.json({ mensaje: "Comentario creado", comentario });
+};</code></pre>
+<p>En resumen, este código crea un nuevo comentario que acepta un texto y una puntuacion en la base de datos, asocia el comentario creado al libro y al usuario correspondientes, y luego responde con un mensaje de éxito y los datos del comentario creado.</p>
+
+<hr>
+<h3 id="controlador-comentarios-verComentario" class="mt-4">Controlador verComentario</h3>
+<p>Este código define una función verComentario que se encarga de obtener un comentario específico de la base de datos mediante su ID y devolverlo en una respuesta JSON.</p>
+<pre><code>const verComentario = async (req, res) => {
+  const { id } = req.params;
+  const comentario = await Comentario.findById(id);
+  res.json(comentario);
+};</code></pre>
+<p>En resumen, este código obtiene un comentario específico de la base de datos utilizando el ID proporcionado en los parametros de la peticion (URL), y luego envía una respuesta JSON con los datos de ese comentario.</p>
+
+<hr>
+<h3 id="controlador-comentarios-modificarComentario" class="mt-4">Controlador modificarComentario</h3>
+<p>Este código define una función modificarComentario que se encarga de actualizar los datos de un comentario en la base de datos.</p>
+<pre><code>const modificarComentario = async (req, res) => {
+  const { id } = req.params;
+  const { textoComentario, puntuacion } = req.body;
+  const comentario = await Comentario.findByIdAndUpdate(id, {
+    textoComentario,
+    puntuacion,
+  });
+  res.json({ mensaje: "Comentario modificado", comentario });
+};</code></pre>
+<p>En resumen, este código permite modificar un comentario en la base de datos utilizando el ID proporcionado en los parametros de la peticion (URL) junto a los nuevos datos enviados en la solicitud HTTP, y luego responde con un mensaje de éxito y los datos actualizados del comentario.</p>
+
+<hr>
+<h3 id="controlador-comentarios-eliminarComentario" class="mt-4">Controlador eliminarComentario</h3>
+<p>Este código define una función eliminarComentario que se encarga de eliminar un comentario de la base de datos y actualizar los arrays de libros y usuarios relacionados.</p>
+<pre><code>const eliminarComentario = async (req, res) => {
+  const { id } = req.params;
+  const comentario = await Comentario.findByIdAndDelete(id);
+  await Libro.findByIdAndUpdate(comentario.idLibro, {
+    $pull: { comentarios: id },
+  });
+  await Usuario.findByIdAndUpdate(comentario.documento, {
+    $pull: { comentarios: id },
+  });
+  res.json({ mensaje: "Comentario eliminado", comentario });
+};</code></pre>
+<p>En resumen, este código elimina un comentario de la base de datos utilizando el ID proporcionado en los parametros de la peticion (URL), actualiza los datos relacionados en los libros y usuarios eliminando el ID del comentario de los arrays de comentarios correspondientes en cada documento, y luego responde con un mensaje de éxito y los datos del comentario eliminado.</p>
+
+<hr>
+<h2 id="controlador-comentario" class="mt-4">Controladores de Reserva</h2>
+<p>En este apartado se definen los controladores para el manejo de las reservas.</p>
+
+<hr>
+<h2 id="controlador-comentario" class="mt-4">Controladores de Prestamo</h2>
+<p>En este apartado se definen los controladores para el manejo de los prestamos.</p>
+
+
+<hr>
+
+<h2 id="rutas" class="mt-4">Rutas</h2>
+<hr>
+<p>Las rutas en un servidor son las URL específicas a las que el servidor puede responder. En ExpressJS, las rutas se definen mediante métodos de enrutamiento que toman como parámetros una URL (o un patrón de URL) y una función de controlador que se ejecuta cuando se realiza una solicitud a esa URL.</p>
+<p><b><a href="https://expressjs.com/en/starter/basic-routing.html">Documentacion de rutas basica en ExpressJS</a></b></p>
+<p><b><a href="https://expressjs.com/en/guide/routing.html">Documentacion de rutas extensa en ExpressJS</a></b></p>
+
+<p>En las rutas se van a repetir frecuentemente los siguientes terminos, asi que vamos a explicarlos un poco.</p>
+<p><b>catchAsync:</b> La función catchAsync se utiliza para envolver funciones asincrónicas en Express.js y manejar cualquier error que pueda ocurrir en ellas. Esto permite que los errores se manejen de manera centralizada en lugar de tener que manejarlos en cada función asincrónica individualmente.</p>
+<pre><code>function catchAsync(fn) {
+  return (req, res, next) => {
+    fn(req, res, next).catch((err) => next(err));
+  };
+}</code></pre>
+
+<br>
+
+<p><b>Protocolo y Metodos HTTP:</b> El Protocolo de Transferencia de Hipertexto (HTTP) es un protocolo de red utilizado para transferir datos entre un cliente y un servidor a través de la web, este protocolo se utiliza para transmitir datos en forma de solicitudes y respuestas. <br>
+
+  El protocolo HTTP se basa en la idea de solicitudes y respuestas, donde el cliente envía una solicitud al servidor y el servidor devuelve una respuesta. Las solicitudes y respuestas se componen de una serie de propiedades llamados <b>headers</b> y un cuerpo opcional <b>body</b> que contiene los datos que se envían entre el cliente y el servidor. <br>
+  
+  Las solicitudes HTTP se dividen en <b>métodos</b> como <b>GET</b> usado para recuperar información del servidor, <b>POST</b> para enviar datos al servidor, <b>PUT</b> para actualizar datos en el servidor, y <b>DELETE</b> para eliminar datos del servidor.</p>
+
+
+<hr>
+<h3 id="controlador-rutas-usuario" class="mt-4">Rutas de Usuario </h3>
+<p>El siguiente código define un router para gestionar las rutas relacionadas con los usuarios en una aplicación utilizando Express.js. Define varias rutas para manejar operaciones CRUD y autenticación de usuarios en una aplicación Express.js. Utiliza middleware para validación, manejo de errores y autenticación.</p>
+
+<pre><code>const routerUsuarios = require("express").Router();
+  const {
+    crearUsuario,
+    buscarUsuario,
+    verUsuarios,
+    editarUsuario,
+    eliminarUsuario,
+    loginUsuario,
+    desconectarUsuario,
+    usuarioLogeado,
+    errorLogin,
+  } = require("../Controllers/usuario");
+  const { catchAsync } = require("../middlewares");
+  const {
+    validarUsuario,
+    validarEditarUsuario,
+  } = require("../Validaciones/validaciones");
+  const passport = require("passport");
+  
+  routerUsuarios
+    .route("/")
+    .get(catchAsync(verUsuarios))
+    .post(validarUsuario, catchAsync(crearUsuario));
+  
+  // METODO Y RUTA PARA INICIAR SESION
+  routerUsuarios.post(
+    "/iniciar-sesion",
+    passport.authenticate("local", {
+      failureRedirect: "/api/usuarios/error-login",
+    }),
+    catchAsync(loginUsuario)
+  );
+  
+  routerUsuarios.get("/desconectarse", catchAsync(desconectarUsuario));
+  routerUsuarios.get("/usuario-logeado", catchAsync(usuarioLogeado));
+  routerUsuarios.post("/error-login", catchAsync(errorLogin));
+  
+  routerUsuarios
+    .route("/:id")
+    .get(catchAsync(buscarUsuario))
+    .put(validarEditarUsuario, catchAsync(editarUsuario))
+    .delete(catchAsync(eliminarUsuario));
+  
+  module.exports = routerUsuarios;
+  </code></pre>
+
+<p>Las rutas creadas son las siguientes:</p>
+<ul>
+  <li>La ruta (“/”) escucha peticiones de métodos (HTTP) GET y POST. Una petición del metodo GET va a ejecutar el controlador verUsuarios y el POST ejecuta el controlador crearUsuario.</li>
+  <li>La ruta (/iniciar-sesion) va a escuchar peticiones POST. Mediante la función “authenticate” de Passport va a realizar la autenticación del usuario y, si falla, redirige al usuario a la ruta “/api/usuarios/error-login”.</li>
+  <li>Ruta (“/desconectarse”) escucha peticiones de métodos GET. La petición del metodo GET va a ejecutar el controlador desconectarUsuario.</li>
+  <li>Ruta (“/usuario-logeado”) escucha peticiones de métodos GET. La petición del metodo GET va a ejecutar el controlador usuarioLogeado.</li>
+  <li>Ruta (“/error-login”) va a escuchar peticiones de métodos POST. La petición del metodo POST va a ejecutar el controlador errorLogin.</li>
+  <li>Ruta (“/:id”) va a escuchar peticiones de métodos GET, PUT y DELETE. La petición del metodo GET va a ejecutar el controlador buscarUsuario, la petición del metodo PUT va a ejecutar el controlador editarUsuario y la petición del metodo DELETE va a ejecutar el controlador elminarUsuario.</li>
+</ul>
+
+<hr>
+<h3 id="controlador-rutas-libro" class="mt-4">Rutas de Libro </h3>
+<p>El siguiente código define un router para gestionar las rutas relacionadas con los libros en una aplicación utilizando Express.js. Define varias rutas para manejar operaciones CRUD de libros en una aplicación Express.js. Utiliza middlewares para validación, manejo de errores, etc.</p>
+<pre><code>const routerLibro = require("express").Router();
+  const {
+    crearLibro,
+    buscarLibro,
+    verLibros,
+    modificarLibro,
+    eliminarLibro,
+  } = require("../Controllers/libro");
+  
+  const { catchAsync } = require("../middlewares");
+  
+  const {
+    validarLibro,
+    validarModificarLibro,
+  } = require("../Validaciones/validaciones");
+  
+  routerLibro
+    .route("/")
+    .get(catchAsync(verLibros))
+    .post(validarLibro, catchAsync(crearLibro));
+  
+  routerLibro
+    .route("/:id")
+    .get(catchAsync(buscarLibro))
+    .put(validarModificarLibro, catchAsync(modificarLibro))
+    .delete(catchAsync(eliminarLibro));
+  
+  module.exports = routerLibro;</code></pre>
+
+<p>Las rutas creadas son las siguientes:</p>
+<ul>
+  <li>La ruta (“/”) escucha peticiones de métodos (HTTP) GET y POST. Una petición del metodo GET va a ejecutar el controlador verLibros y el POST ejecuta el controlador crearLibro.</li>
+  <li>Ruta (“/:id”) va a escuchar peticiones de métodos GET, PUT y DELETE. La petición del metodo GET va a ejecutar el controlador buscarLibro, la petición del metodo PUT va a ejecutar el controlador modificarLibro y la petición del metodo DELETE va a ejecutar el controlador elminarLibro.</li>
+</ul>
+
+<hr>
+<h3 id="controlador-rutas-comentario" class="mt-4">Rutas de Comentario </h3>
+<p>El siguiente código define un router para gestionar las rutas relacionadas con los comentarios en una aplicación utilizando Express.js. Define varias rutas para manejar operaciones CRUD de comentarios en una aplicación Express.js. Utiliza middlewares para validación, manejo de errores, etc.</p>
+<pre><code>const routerComentario = require("express").Router();
+  const {
+    crearComentario,
+    modificarComentario,
+    eliminarComentario,
+    verComentario,
+  } = require("../Controllers/comentario");
+  
+  const { catchAsync } = require("../middlewares");
+  
+  const {
+    validarComentario,
+    validarModificarComentario,
+  } = require("../Validaciones/validaciones");
+  
+  routerComentario
+    .route("/")
+    .post(validarComentario, catchAsync(crearComentario));
+  
+  routerComentario
+    .route("/:id")
+    .get(catchAsync(verComentario))
+    .put(validarModificarComentario, catchAsync(modificarComentario))
+    .delete(catchAsync(eliminarComentario));
+  
+  module.exports = routerComentario;</code></pre>
+
+  <p>Las rutas creadas son las siguientes:</p>
+  <ul>
+    <li>La ruta (“/”) escucha peticiones de métodos (HTTP) POST. Una petición del metodo POST ejecuta el controlador crearComentario.</li>
+    <li>Ruta (“/:id”) va a escuchar peticiones de métodos GET, PUT y DELETE. La petición del metodo GET va a ejecutar el controlador verComentario, la petición del metodo PUT va a ejecutar el controlador modificarComentario y la petición del metodo DELETE va a ejecutar el controlador elminarComentario.</li>
+  </ul>
+
+<hr>
+<h3 id="controlador-rutas-reserva" class="mt-4">Rutas de Reserva </h3>
+<p>El siguiente código define un router para gestionar las rutas relacionadas con las reservas en una aplicación utilizando Express.js. Define varias rutas para manejar operaciones CRUD de reserva en una aplicación Express.js. Utiliza middlewares para validación, manejo de errores, etc.</p>
+<pre><code>const RouterReservas = require("express").Router();
+  const {
+    crearReserva,
+    verReserva,
+    verReservas,
+    editarReserva,
+    eliminarReserva,
+  } = require("../Controllers/reserva");
+  const { catchAsync } = require("../middlewares");
+  const {
+    validarReserva,
+    validarEditarReserva,
+  } = require("../Validaciones/validaciones");
+  
+  RouterReservas.route("/")
+    .post(validarReserva, catchAsync(crearReserva))
+    .get(catchAsync(verReservas));
+  
+  RouterReservas.route("/:id")
+    .get(catchAsync(verReserva))
+    .put(validarEditarReserva, catchAsync(editarReserva))
+    .delete(catchAsync(eliminarReserva));
+  module.exports = RouterReservas;</code></pre>
+<p>Las rutas creadas son las siguientes:</p>
+<ul>
+  <li>La ruta (“/”) escucha peticiones de métodos (HTTP) POST y GET. Una petición del metodo POST ejecuta el controlador crearReserva y una petición del metodo GET ejecuta el controlador verReservas.</li>
+  <li>Ruta (“/:id”) va a escuchar peticiones de métodos GET, PUT y DELETE. La petición del metodo GET va a ejecutar el controlador verReserva, la petición del metodo PUT va a ejecutar el controlador editarReserva y la petición del metodo DELETE va a ejecutar el controlador elminarReserva.</li>
+</ul>
+
+<hr>
+<h3 id="controlador-rutas-prestamo" class="mt-4">Rutas de Prestamo </h3>
+<p>El siguiente código define un router para gestionar las rutas relacionadas con los préstamos en una aplicación utilizando Express.js. Define varias rutas para manejar operaciones CRUD de préstamos en una aplicación Express.js. Utiliza middlewares para validación, manejo de errores, etc.</p>
+<pre><code>const RouterPrestamos = require("express").Router();
+  const {
+    crearPrestamo,
+    verPrestamo,
+    verPrestamos,
+    editarPrestamo,
+    eliminarPrestamo,
+  } = require("../Controllers/prestamo");
+  const { catchAsync } = require("../middlewares");
+  const {
+    validarPrestamo,
+    validarEditarPrestamo,
+  } = require("../Validaciones/validaciones");
+  
+  RouterPrestamos.route("/")
+    .post(validarPrestamo, catchAsync(crearPrestamo))
+    .get(catchAsync(verPrestamos));
+  
+  RouterPrestamos.route("/:id")
+    .get(catchAsync(verPrestamo))
+    .put(validarEditarPrestamo, catchAsync(editarPrestamo))
+    .delete(catchAsync(eliminarPrestamo));
+  module.exports = RouterPrestamos;</code></pre>
+<p>Las rutas creadas son las siguientes:</p>
+<ul>
+  <li>La ruta (“/”) escucha peticiones de métodos (HTTP) POST y GET. Una petición del metodo POST ejecuta el controlador crearPrestamo y una petición del metodo GET ejecuta el controlador verPrestamos.</li>
+  <li>Ruta (“/:id”) va a escuchar peticiones de métodos GET, PUT y DELETE. La petición del metodo GET va a ejecutar el controlador verPrestamo, la petición del metodo PUT va a ejecutar el controlador editarPrestamo y la petición del metodo DELETE va a ejecutar el controlador elminarPrestamo.</li>
+</ul>
+
+<hr>
+
+<h2 id="esquemas-validaciones" class="mt-4">Esquemas para validaciones</h2>
+<hr>
+<p>Un esquema de validación de datos en una base de datos es un conjunto de reglas y restricciones que se aplican a los datos almacenados en la base de datos. Se utiliza validar los datos de las solicitudes entrantes y asegurar que cumplan con los requisitos esperados antes de proceder con la lógica del negocio. El uso de esquemas de validación en una base de datos ayuda a prevenir la entrada de datos no válidos, lo que puede evitar problemas como datos duplicados, datos incompletos o datos que no cumplan con los requisitos de negocio.</p>
+
+<p><b>Joi:</b> Es una biblioteca de validación de esquemas en JavaScript que se utiliza comúnmente en el contexto de validaciones de datos en bases de datos. <br>
+<b>Required():</b> Es un metodo de de Joi que se utiliza para indicar que un campo es obligatorio.</p>
+
 </div>
       </div>
     </div>
