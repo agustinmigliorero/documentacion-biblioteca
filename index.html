@@ -23,13 +23,14 @@
         border-radius: 3px;
         background-color: #2b2b2b;
       }
+      
     </style>
   </head>
   <body>
     <h1 style="text-align: center" class="mb-5">Documentación del sistema</h1>
     <div class="container">
       <div class="row">
-        <div class="col-sm-3 col-12 sticky">
+        <div class="col-sm-3 col-12">
           <ul>
             <li><a href="#servidor">Servidor</a></li>
             <ul>
@@ -72,9 +73,21 @@
                   <li><a href="#controlador-comentarios-eliminarComentario">eliminarComentario</a></li>
                 </ul>
                 <li><a href="#controlador-reserva">Controladores Reserva</a></li>
-                <ul></ul>
+                <ul>
+                    <li><a href="#controlador-reserva-crearReserva">crearReserva</a></li>
+                    <li><a href="#controlador-reserva-verReserva">verReserva</a></li>
+                    <li><a href="#controlador-reserva-verReservas">verReservas</a></li>
+                    <li><a href="#controlador-reserva-editarReserva">editarReserva</a></li>
+                    <li><a href="#controlador-reserva-eliminarReserva">eliminarReserva</a></li>
+                </ul>
                 <li><a href="#controlador-prestamo">Controladores Prestamo</a></li>
-                <ul></ul>
+                <ul>
+                    <li><a href="#controlador-prestamo-crearPrestamo">crearPrestamo</a></li>
+                    <li><a href="#controlador-prestamo-verPrestamo">verPrestamo</a></li>
+                    <li><a href="#controlador-prestamo-verPrestamos">verPrestamos</a></li>
+                    <li><a href="#controlador-prestamo-editarPrestamo">editarPrestamo</a></li>
+                    <li><a href="#controlador-prestamo-eliminarPrestamo">eliminarPrestamo</a></li>
+                </ul>
               </ul>
               <li><a href="#rutas">Rutas</a></li>
               <ul>
@@ -229,15 +242,15 @@ module.exports = mongoose.model("Usuario", usuarioSchema);</code>
           <p>
             Propiedades:
             <ul>
-                <li>dni: DNI del usuario.</li>
-                <li>nombre: Nombre del usuario.</li>
-                <li>apellido: Apellido del usuario.</li>
-                <li>email: Email del usuario.</li>
-                <li>rol: Rol del usuario (por defecto, "Estudiante").</li>
-                <li>activo: Estado de actividad del usuario (por defecto, false).</li>
-                <li>comentarios: Array de referencias a comentarios hechos por el usuario.</li>
-                <li>prestamos: Array de referencias a préstamos hechos por el usuario.</li>
-                <li>reservas: Array de referencias a reservas hechas por el usuario</li>
+                <li><b>dni:</b> DNI del usuario.</li>
+                <li><b>nombre:</b> Nombre del usuario.</li>
+                <li><b>apellido:</b> Apellido del usuario.</li>
+                <li><b>email:</b> Email del usuario.</li>
+                <li><b>rol:</b> Rol del usuario (por defecto, "Estudiante").</li>
+                <li><b>activo:</b> Estado de actividad del usuario (por defecto, false).</li>
+                <li><b>comentarios:</b> Array de referencias a comentarios hechos por el usuario.</li>
+                <li><b>prestamos:</b> Array de referencias a préstamos hechos por el usuario.</li>
+                <li><b>reservas:</b> Array de referencias a reservas hechas por el usuario</li>
             </ul>
           </p>
 
@@ -702,12 +715,161 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
 <p>En este apartado se definen los controladores para el manejo de las reservas.</p>
 
 <hr>
+<h3 id="controlador-reserva-crearReserva" class="mt-4">Controlador crearReserva</h3>
+<p>Este código define una función crearReserva que se encarga de crear una nueva reserva de un libro en la base de datos y asociar esta reserva tanto al libro como al usuario correspondientes.</p>
+<pre><code>const crearReserva = async (req, res) => {
+  const { idLibro, documento, fechaReserva, fechaDevolucion, estadoReserva } =
+    req.body;
+
+  const reserva = new Reserva({
+    idLibro,
+    documento,
+    fechaReserva,
+    fechaDevolucion,
+    estadoReserva,
+  });
+  await reserva.save();
+  await Libro.findByIdAndUpdate(idLibro, {
+    $push: { reservas: reserva._id },
+  });
+  await Usuario.findByIdAndUpdate(documento, {
+    $push: { reservas: reserva._id },
+  });
+  res.json({ mensaje: "Reserva creada" });
+};</code></pre>
+<p>En resumen, este código crea una nueva reserva de un libro en la base de datos, asocia la reserva tanto al libro como al usuario correspondientes mediante la actualización de sus respectivos arrays de reservas, y luego responde con un mensaje indicando que la reserva ha sido creada satisfactoriamente.</p>
+
+<hr>
+<h3 id="controlador-reserva-verReserva" class="mt-4">Controlador verReserva</h3>
+<p>Este código define una función verReserva que se encarga de buscar y devolver una reserva específica de la base de datos.</p>
+<pre><code>const verReserva = async (req, res) => {
+  const { id } = req.params;
+  const reserva = await Reserva.findById(id);
+  res.json(reserva);
+};</code></pre>
+<p>En resumen, este código busca una reserva en la base de datos utilizando el ID proporcionado en la URL de la petición HTTP, la encuentra y la devuelve en forma de respuesta JSON.</p>
+
+<hr>
+<h3 id="controlador-reserva-verReservas" class="mt-4">Controlador verReservas</h3>
+<p>Este código define una función verReservas que se encarga de buscar y devolver todas las reservas en la base de datos.</p>
+<pre><code>const verReservas = async (req, res) => {
+  const reservas = await Reserva.find();
+  res.json(reservas);
+};</code></pre>
+<p>En resumen, este código busca todas las reservas en la base de datos y las devuelve en forma de respuesta JSON.</p>
+
+<hr>
+<h3 id="controlador-reserva-editarReserva" class="mt-4">Controlador editarReserva</h3>
+<p>Este código define una función editarReserva que se encarga de modificar una reserva existente en la base de datos.</p>
+<pre><code>const editarReserva = async (req, res) => {
+  const { id } = req.params;
+  const { idLibro, documento, fechaReserva, fechaDevolucion, estadoReserva } =
+    req.body;
+  const reserva = await Reserva.findByIdAndUpdate(id, {
+    idLibro,
+    documento,
+    fechaReserva,
+    fechaDevolucion,
+    estadoReserva,
+  });
+  res.json({ mensaje: "Reserva modificada", reserva });
+};</code></pre>
+<p>En resumen, este código busca una reserva en la base de datos utilizando el ID proporcionado en la URL de la petición HTTP, la actualiza con los nuevos datos proporcionados en el cuerpo de la petición (body) y luego responde con un mensaje indicando que la reserva ha sido modificada con éxito.</p>
+
+<hr>
+<h3 id="controlador-reserva-eliminarReserva" class="mt-4">Controlador eliminarReserva</h3>
+<p>Este código define una función eliminarReserva que se encarga de eliminar una reserva existente de la base de datos y eliminar las referencias de esta reserva en los libros y usuarios correspondientes.</p>
+<pre><code>const eliminarReserva = async (req, res) => {
+  const { id } = req.params;
+  const reserva = await Reserva.findByIdAndDelete(id);
+  await Libro.findByIdAndUpdate(reserva.idLibro, {
+    $pull: { reservas: id },
+  });
+  await Usuario.findByIdAndUpdate(reserva.documento, {
+    $pull: { reservas: id },
+  });
+  res.json({ mensaje: "Reserva eliminada", reserva });
+};</code></pre>
+<p>En resumen, este código busca una reserva en la base de datos utilizando el ID proporcionado en la URL de la petición HTTP, la elimina de la base de datos, elimina las referencias de esta reserva en los libros y usuarios correspondientes, y luego responde con un mensaje indicando que la reserva ha sido eliminada con éxito.</p>
+
+<hr>
 <h2 id="controlador-comentario" class="mt-4">Controladores de Prestamo</h2>
 <p>En este apartado se definen los controladores para el manejo de los prestamos.</p>
 
+<hr>
+<h3 id="controlador-prestamo-crearPrestamo" class="mt-4">Controlador crearPrestamo</h3>
+<p>Este código define una función crearPrestamo que se encarga de crear un nuevo préstamo de un libro en la base de datos y asociar este préstamo tanto al libro como al usuario correspondientes.</p>
+<pre><code>const crearPrestamo = async (req, res) => {
+  const { documento, idLibro, fechaDeInicio, fechaDeFin } = req.body;
+  const prestamo = new Prestamo({
+    documento,
+    idLibro,
+    fechaDeInicio,
+    fechaDeFin,
+  });
+  await prestamo.save();
+  await Libro.findByIdAndUpdate(idLibro, {
+    $push: { prestamos: prestamo._id },
+  });
+  await Usuario.findByIdAndUpdate(documento, {
+    $push: { prestamos: prestamo._id },
+  });
+  res.json({ mensaje: "Prestamo creado" });
+};</code></pre>
+<p>En resumen, este código crea un nuevo préstamo de un libro en la base de datos, asocia el préstamo tanto al libro como al usuario correspondientes mediante la actualización de sus respectivos arrays de préstamos, y luego responde con un mensaje indicando que el préstamo ha sido creado satisfactoriamente.</p>
 
 <hr>
+<h3 id="controlador-prestamo-verPrestamo" class="mt-4">Controlador verPrestamo</h3>
+<p>Este código define una función verPrestamo que se encarga de buscar y mostrar un préstamo específico de la base de datos según el ID proporcionado en la URL de la petición HTTP.</p>
+<pre><code>const verPrestamo = async (req, res) => {
+  const { id } = req.params;
+  const prestamo = await Prestamo.findById(id);
+  res.json(prestamo);
+};</code></pre>
+<p>En resumen, este código busca un préstamo específico en la base de datos utilizando el ID proporcionado en la URL de la petición HTTP y luego responde con los datos de ese préstamo en formato JSON.</p>
 
+<hr>
+<h3 id="controlador-prestamo-verPrestamos" class="mt-4">Controlador verPrestamos</h3>
+<p>Este código define una función verPrestamos que se encarga de buscar y mostrar todos los préstamos en la base de datos.</p>
+<pre><code>const verPrestamos = async (req, res) => {
+  const prestamos = await Prestamo.find();
+  res.json(prestamos);
+};</code></pre>
+<p>En resumen, este código busca todos los préstamos en la base de datos y luego responde con los datos de todos los préstamos encontrados en formato JSON.</p>
+
+<hr>
+<h3 id="controlador-prestamo-editarPrestamo" class="mt-4">Controlador editarPrestamo</h3>
+<p>Este código define una función editarPrestamo que se encarga de modificar un préstamo existente en la base de datos.</p>
+<pre><code>const editarPrestamo = async (req, res) => {
+  const { id } = req.params;
+  const { idLibro, documento, fechaDeInicio, fechaDeFin } = req.body;
+  const prestamo = await Prestamo.findByIdAndUpdate(id, {
+    idLibro,
+    documento,
+    fechaDeInicio,
+    fechaDeFin,
+  });
+  res.json({ mensaje: "Prestamo modificado", prestamo });
+};</code></pre>
+<p>En resumen, este código busca un préstamo en la base de datos utilizando el ID proporcionado en la URL de la petición HTTP, lo actualiza con los nuevos datos proporcionados en el cuerpo de la petición HTTP y luego responde con un mensaje indicando que el préstamo ha sido modificado con éxito.</p>
+
+<hr>
+<h3 id="controlador-prestamo-eliminarPrestamo" class="mt-4">Controlador eliminarPrestamo</h3>
+<p>Este código define una función eliminarPrestamo que se encarga de eliminar un préstamo existente de la base de datos y eliminar las referencias de este préstamo en los libros y usuarios correspondientes.</p>
+<pre><code>const eliminarPrestamo = async (req, res) => {
+  const { id } = req.params;
+  const prestamo = await Prestamo.findByIdAndDelete(id);
+  await Libro.findByIdAndUpdate(prestamo.idLibro, {
+    $pull: { prestamos: id },
+  });
+  await Usuario.findByIdAndUpdate(prestamo.documento, {
+    $pull: { prestamos: id },
+  });
+  res.json({ mensaje: "Prestamo eliminado", prestamo });
+};</code></pre>
+<p>En resumen, este código busca un préstamo en la base de datos utilizando el ID proporcionado en la URL de la petición HTTP, lo elimina de la base de datos, elimina las referencias de este préstamo en los libros y usuarios correspondientes, y luego responde con un mensaje indicando que el préstamo ha sido eliminado con éxito.</p>
+
+<hr>
 <h2 id="rutas" class="mt-4">Rutas</h2>
 <hr>
 <p>Las rutas en un servidor son las URL específicas a las que el servidor puede responder. En ExpressJS, las rutas se definen mediante métodos de enrutamiento que toman como parámetros una URL (o un patrón de URL) y una función de controlador que se ejecuta cuando se realiza una solicitud a esa URL.</p>
