@@ -110,6 +110,20 @@
                 <li><a href="#esquemas-esquemaPrestamo">esquemaPrestamo</a></li>
                 <li><a href="#esquemas-esquemaEditarPrestamo">esquemaEditarPrestamo</a></li>
               </ul>
+              <li><a href="#validaciones">Validaciones</a></li>
+              <ul>
+                <li><a href="#validaciones-validarUsuario">validarUsuario</a></li>
+                <li><a href="#validaciones-validarEditarUsuario">validarEditarUsuario</a></li>
+                <li><a href="#validaciones-validarLibro">validarLibro</a></li>
+                <li><a href="#validaciones-validarModificarLibro">validarModificarLibro</a></li>
+                <li><a href="#validaciones-validarComentario">validarComentario</a></li>
+                <li><a href="#validaciones-validarModificarComentario">validarModificarComentario</a></li>
+                <li><a href="#validaciones-validarPrestamo">validarPrestamo</a></li>
+                <li><a href="#validaciones-validarEditarPrestamo">validarEditarPrestamo</a></li>
+                <li><a href="#validaciones-validarReserva">validarReserva</a></li>
+                <li><a href="#validaciones-validarEditarReserva">validarEditarReserva</a></li>
+              </ul>
+              <li><a href="#index">Index.js</a></li>
             </ul>
             <li>Cliente</li>
             <ul>
@@ -1325,6 +1339,323 @@ module.exports = moongose.model("Reserva", schemaReserva);</code></pre>
     <li><b>fechaDevolucion:</b> Booleano.</li>
   </ul>
 </p>
+
+<hr>
+
+<h2 id="validaciones" class="mt-4">Middlewares de Validacion</h2>
+<hr>
+
+<p><b>Middleware:</b> los middleware son funciones que se utilizan en el marco de trabajo de Node.js para manipular y controlar el flujo de solicitudes y respuestas en una aplicación web. Tienen acceso al objeto de solicitud y al objeto de respuesta, y se utilizan para realizar tareas como la autenticación, la validación de datos, la manipulación del cuerpo de la solicitud o la gestión de errores.</p>
+<p><b>Date:</b> es una clase nativa de JavaScript que permite crear un objeto date usando la función Date() sin argumentos, que devuelve la hora y la fecha actual. Se pueden trabajar las fechas y horas con diversos métodos como getTime(), getDate(), entre otros.</p>
+<p><b>validate:</b> el método validate en Joi se utiliza para validar un objeto o valor en relación con un esquema de validación. Si hay errores de validación, se devuelve un objeto con información detallada sobre los errores.</p>
+
+<hr>
+<h3 id="validaciones-validarUsuario" class="mt-4">validarUsuario</h3>
+<p>El siguiente código muestra una función que se utiliza como un middleware para validar los datos del usuario obtenidos del cuerpo de una solicitud utilizando el esquema de validación esquemaUsuario y, en caso de error, responde con un mensaje de error y un status 400.</p>
+<pre><code>const validarUsuario = (req, res, next) => {
+  const { error } = esquemaUsuario.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};</code></pre>
+<p>En resumen, este código valida el cuerpo de una solicitud HTTP utilizando un esquema de validación y, si hay algún error de validación, envía una respuesta HTTP con un estado de error y un mensaje de error. Si no hay ningún error de validación, se pasa la solicitud al siguiente middleware en la pila.</p>
+
+<hr>
+<h3 id="validaciones-validarEditarUsuario" class="mt-4">validarEditarUsuario</h3>
+<p>El siguiente código muestra una función que se utiliza como un middleware para validar los datos del usuario obtenidos del cuerpo de una solicitud, para modificarlo, utilizando el esquema de validación esquemaEditarUsuario y, en caso de error, responde con un mensaje de error y un status 400.</p>
+<pre><code>const validarEditarUsuario = (req, res, next) => {
+  const { error } = esquemaEditarUsuario.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};</code></pre>
+<p>En resumen, este código valida el cuerpo de una solicitud HTTP utilizando un esquema de validación llamado esquemaEditarUsuario y, si hay algún error de validación, envía una respuesta HTTP con un estado de error y un mensaje de error. Si no hay ningún error de validación, se pasa la solicitud al siguiente middleware en la pila.</p>
+
+<hr>
+<h3 id="validaciones-validarLibro" class="mt-4">validarLibro</h3>
+<p>El siguiente código muestra una función que se utiliza como un middleware para validar los datos del libro obtenidos del cuerpo de una solicitud utilizando el esquema de validación esquemaLibro y, en caso de error, responde con un mensaje de error y un status 400</p>
+<pre><code>const validarLibro = (req, res, next) => {
+  const { error } = esquemaLibro.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};</code></pre>
+<p>En resumen, este código valida el cuerpo de una solicitud HTTP utilizando un esquema de validación llamado esquemaLibro y, si hay algún error de validación, envía una respuesta HTTP con un estado de error y un mensaje de error. Si no hay ningún error de validación, se pasa la solicitud al siguiente middleware en la pila.</p>
+
+<hr>
+<h3 id="validaciones-validarModificarLibro" class="mt-4">validarModificarLibro</h3>
+<p>El siguiente código muestra una función que se utiliza como un middleware para validar los datos del libro obtenidos del cuerpo de una solicitud, para modificarlo, utilizando el esquema de validación esquemaModificarLibro y, en caso de error, responde con un mensaje de error y un status 400.</p>
+<pre><code>const validarModificarLibro = (req, res, next) => {
+  const { error } = esquemaModificarLibro.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};</code></pre>
+<p>En resumen, este código valida el cuerpo de una solicitud HTTP utilizando un esquema de validación llamado esquemaModificarLibro y, si hay algún error de validación, envía una respuesta HTTP con un estado de error y un mensaje de error. Si no hay ningún error de validación, se pasa la solicitud al siguiente middleware en la pila.</p>
+
+<hr>
+<h3 id="validaciones-validarComentario" class="mt-4">validarComentario</h3>
+<p>El siguiente código muestra una función que se utiliza como un middleware para validar los datos del comentario obtenidos del cuerpo de una solicitud utilizando el esquema de validación esquemaComentario y, en caso de error, responde con un mensaje de error y un status 400.</p>
+<pre><code>const validarComentario = (req, res, next) => {
+  const { error } = esquemaComentario.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};</code></pre>
+<p>En resumen, este código valida el cuerpo de una solicitud HTTP utilizando un esquema de validación llamado esquemaComentario y, si hay algún error de validación, envía una respuesta HTTP con un estado de error y un mensaje de error. Si no hay ningún error de validación, se pasa la solicitud al siguiente middleware en la pila.</p>
+
+<hr>
+<h3 id="validaciones-validarModificarComentario" class="mt-4">validarModificarComentario</h3>
+<p>El siguiente código muestra una función que se utiliza como un middleware para validar los datos del comentario obtenidos del cuerpo de una solicitud, para modificarlo, utilizando el esquema de validación esquemaModificarComentario y, en caso de error, responde con un mensaje de error y un status 400.</p>
+<pre><code>const validarModificarComentario = (req, res, next) => {
+  const { error } = esquemaModificarComentario.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};</code></pre>
+<p>En resumen, este código valida el cuerpo de una solicitud HTTP utilizando un esquema de validación llamado esquemaModificarComentario y, si hay algún error de validación, envía una respuesta HTTP con un estado de error y un mensaje de error. Si no hay ningún error de validación, se pasa la solicitud al siguiente middleware en la pila.</p>
+
+<hr>
+<h3 id="validaciones-validarPrestamo" class="mt-4">validarPrestamo</h3>
+<p>El siguiente código muestra una función que se utiliza como middleware para validar los datos de un préstamo, utilizando el esquema de validación esquemaPrestamo, antes de continuar con una solicitud de creación de prestamo. Tambien verifica si la fecha de inicio es menor que la fecha de fin y si la fecha de fin o la fecha de inicio es menor a la fecha actual.</p>
+<pre><code>const validarPrestamo = (req, res, next) => {
+  const { error } = esquemaPrestamo.validate(req.body);
+  let { fechaDeInicio, fechaDeFin } = req.body;
+  let dateFechaInicio = new Date(fechaDeInicio);
+  let dateFechaFin = new Date(fechaDeFin);
+  if (dateFechaInicio.getTime() > dateFechaFin.getTime()) {
+    return res
+      .status(400)
+      .json({ error: "La fecha de fin debe ser mayor a la fecha de inicio" });
+  }
+  if (
+    dateFechaFin.getTime() < Date.now() ||
+    dateFechaInicio.getTime() < Date.now()
+  ) {
+    return res.status(400).json({
+      error:
+        "La fecha de fin o la fecha de inicio no pueden ser menores a la fecha actual",
+    });
+  }
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};</code></pre>
+<p>En resumen, este código valida el cuerpo de una solicitud HTTP utilizando un esquema de validación llamado esquemaPrestamo y además realiza validaciones adicionales sobre las fechas de inicio y fin del préstamo, extrayendo las propiedades fechaDeInicio y fechaDeFin del cuerpo de la petición convirtiéndolas en objetos Date para compararlas. Si alguna validación falla, se envía una respuesta HTTP con un mensaje de error correspondiente. Si todas las validaciones pasan, la solicitud se pasa al siguiente middleware.</p>
+
+<hr>
+<h3 id="validaciones-validarEditarPrestamo" class="mt-4">validarEditarPrestamo</h3>
+<p>El siguiente código muestra una función que se utiliza como middleware para validar los datos de un préstamo, utilizando el esquema de validación esquemaEditarPrestamo, antes de continuar con una solicitud de edición de un prestamo. Tambien verifica si la fecha de inicio es menor que la fecha de fin y si la fecha de fin o la fecha de inicio es menor a la fecha actual.</p>
+<pre><code>const validarEditarPrestamo = (req, res, next) => {
+  const { error } = esquemaEditarPrestamo.validate(req.body);
+  let { fechaDeInicio, fechaDeFin } = req.body;
+  let dateFechaDeInicio = new Date(fechaDeInicio);
+  let dateFechaDeFin = new Date(fechaDeFin);
+  if (dateFechaDeInicio.getTime() > dateFechaDeFin.getTime()) {
+    return res
+      .status(400)
+      .json({ error: "La fecha de fin debe ser mayor a la fecha de inicio" });
+  }
+  if (dateFechaDeFin.getTime() < Date.now()) {
+    return res
+      .status(400)
+      .json({ error: "La fecha de fin no puede ser menor a la fecha actual" });
+  }
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};</code></pre>
+<p>En resumen, este código valida el cuerpo de una solicitud HTTP utilizando un esquema de validación llamado esquemaEditarPrestamo y además realiza validaciones adicionales sobre las fechas de inicio y fin del préstamo, extrayendo las propiedades fechaDeInicio y fechaDeFin del cuerpo de la petición convirtiéndolas en objetos Date para compararlas. Si alguna validación falla, se envía una respuesta HTTP con un mensaje de error correspondiente. Si todas las validaciones pasan, la solicitud se pasa al siguiente middleware.</p>
+
+<hr>
+<h3 id="validaciones-validarReserva" class="mt-4">validarReserva</h3>
+<p>El siguiente código muestra una función que se utiliza como un middleware para validar los datos de la reserva obtenidos del cuerpo de una solicitud utilizando el esquema de validación esquemaReserva y, en caso de error, responde con un mensaje de error y un status 400.</p>
+<pre><code>const validarReserva = (req, res, next) => {
+  const { error } = esquemaReserva.validate(req.body);
+  let { fechaReserva, fechaDevolucion } = req.body;
+  let dateFechaReserva = new Date(fechaReserva);
+  let dateFechaDevolucion = new Date(fechaDevolucion);
+  if (dateFechaReserva.getTime() > dateFechaDevolucion.getTime()) {
+    return res.status(400).json({
+      error: "La fecha de devolución debe ser mayor a la fecha de reserva",
+    });
+  }
+  if (
+    dateFechaReserva.getTime() < Date.now() ||
+    dateFechaDevolucion.getTime() < Date.now()
+  ) {
+    return res.status(400).json({
+      error:
+        "La fecha de reserva y la fecha de devolución no pueden ser menores a la fecha actual",
+    });
+  }
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};</code></pre>
+<p>En resumen, este código valida el cuerpo de una solicitud HTTP utilizando un esquema de validación llamado esquemaReserva y además realiza validaciones adicionales sobre las fechas de inicio y fin del préstamo, extrayendo las propiedades fechaReserva y fechaDevolucion del cuerpo de la petición convirtiéndolas en objetos Date para compararlas. Si alguna validación falla, se envía una respuesta HTTP con un mensaje de error correspondiente. Si todas las validaciones pasan, la solicitud se pasa al siguiente middleware.</p>
+
+<hr>
+<h3 id="validaciones-validarEditarReserva" class="mt-4">validarEditarReserva</h3>
+<p>El siguiente código muestra una función que se utiliza como middleware para validar los datos de una reserva antes de continuar, utilizando el esquema de validación EsquemaEditarReserva, con una solicitud de edición de una reserva. Tambien verifica si la fecha de inicio es menor que la fecha de fin y si la fecha de fin o la fecha de inicio es menor a la fecha actual.</p>
+<pre><code>const validarEditarReserva = (req, res, next) => {
+  const { error } = esquemaEditarReserva.validate(req.body);
+  let { fechaReserva, fechaDevolucion } = req.body;
+  if (fechaReserva > fechaDevolucion) {
+    return res.status(400).json({
+      error: "La fecha de devolución debe ser mayor a la fecha de reserva",
+    });
+  }
+  if (fechaReserva < Date.now() || fechaDevolucion < Date.now()) {
+    return res.status(400).json({
+      error:
+        "La fecha de reserva y la fecha de devolución no pueden ser menores a la fecha actual",
+    });
+  }
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  next();
+};</code></pre>
+<p>En resumen, este código valida el cuerpo de una solicitud HTTP utilizando un esquema de validación llamado esquemaEditarReserva y además realiza validaciones adicionales sobre las fechas de inicio y fin del préstamo, extrayendo las propiedades fechaDeInicio y fechaDeFin del cuerpo de la petición convirtiéndolas en objetos Date para compararlas. Si alguna validación falla, se envía una respuesta HTTP con un mensaje de error correspondiente. Si todas las validaciones pasan, la solicitud se pasa al siguiente middleware.</p>
+
+<hr>
+
+<h2 id="index" class="mt-4">Servidor index.js</h2>
+<hr>
+
+<p>Este archivo es el punto de entrada inicial, que se encargará de establecer una conexión con una base de datos MongoDB utilizando Mongoose, configurar el middleware CORS, inicializar Passport, definir enrutadores para las rutas que manejan peticiones HTTP, también crea un usuario administrador en caso de que no haya ningún usuario en la base de datos, además de manejar errores e iniciar el servidor en el puerto especificado en las variables de entorno.</p>
+
+<hr>
+
+<p>El siguiente codigo se encarga de conectar una base de datos MongoDB utilizando la libreria Mongoose.</p>
+<pre><code>mongoose.connect(process.env.MONGO_URL_CONNECTION, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+
+db.on("error", (err) => console.log(err));
+db.once("open", () => console.log("Base de datos conectada!"));
+</code></pre>
+<p>En resumen, este código se encarga de conectar a una base de datos MongoDB utilizando Mongoose y establece manejadores de eventos para manejar errores y confirmar la conexión exitosa.</p>
+
+<hr>
+
+<p>El siguiente código configura el middleware CORS en una aplicación Express en NodeJS.</p>
+<pre><code>app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, Content-Type, Accept, Origin, Authorization"
+  );
+  next();
+});
+</code></pre>
+<p>En resumen, este código establece configuraciones CORS en la aplicación Express para permitir solicitudes desde diferentes orígenes/dominios y definir los métodos y encabezados permitidos en las solicitudes.</p>
+
+<hr>
+
+<p>El siguiente código configura Passport.js para la autenticación de usuarios y el manejo de sesiones en una aplicación Express en Node.js.</p>
+<pre><code>app.use(
+  session({
+    secret: process.env.SECRET_SESSION,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(Usuario.authenticate()));
+
+passport.serializeUser(Usuario.serializeUser());
+passport.deserializeUser(Usuario.deserializeUser());
+</code></pre>
+<p>El anterior código configura Passport.js para la autenticación de usuarios utilizando una estrategia local, establece la configuración de sesiones utilizando express-session y define cómo serializar y deserializar usuarios para su uso en la autenticación basada en sesiones.</p>
+
+<hr>
+
+<p>El siguiente código configura los enrutadores de la aplicación Express en Node.js.</p>
+<pre><code>app.use("/api/usuarios", routerUsuarios);
+  app.use("/api/libros", routerLibro);
+  app.use("/api/comentarios", routerComentario);
+  app.use("/api/reservas", routerReserva);
+  app.use("/api/prestamos", routerPrestamo);
+  </code></pre>
+<p>El código anterior configura las rutas de la aplicación Express para manejar diferentes endpoints/URL y utilizar diferentes objetos de enrutamiento para manejar las solicitudes a esos endpoints/URL</p>
+
+<hr>
+
+<p>El siguiente código configura una ruta en la aplicación Express para servir el archivo HTML compilado de React cuando se realiza una solicitud a cualquier ruta.</p>
+<pre><code>app.use(express.static(path.join(__dirname, "public")));
+  const htmlPath = path.join(__dirname, "public", "index.html");
+  
+  app.get("*", (req, res) => {
+    res.sendFile(htmlPath);
+  });
+  </code></pre>
+<p>En la linea <i><b>app.use(express.static(path.join(__dirname, "public")));</b></i> se utiliza el middleware express.static para configurar una ruta estática en la aplicación. Esta ruta estática sirve archivos estáticos desde el directorio "public" en el directorio raíz del proyecto. express.static toma como argumento la ruta del directorio donde se encuentran los archivos estáticos.</p>
+<p>En la linea <i><b>const htmlPath = path.join(__dirname, "public", "index.html");</b></i> Se define la variable htmlPath que contiene la ruta completa del archivo "index.html" dentro del directorio "public". path.join() se utiliza para unir las partes de la ruta y crear la ruta completa.</p>
+<p>En la linea <i><b>app.get("*", (req, res) => { res.sendFile(htmlPath); });</b></i> Se define una ruta GET para cualquier ruta utilizando el método app.get(). Cuando se realiza una solicitud a cualquier ruta, el middleware se ejecuta y se utiliza el método res.sendFile() para enviar el archivo HTML compilado de React como respuesta. El archivo HTML se sirve desde la ruta especificada en htmlPath.</p>
+<p>En resumen, este código configura una ruta en la aplicación Express para servir el archivo HTML compilado de React cuando se realiza una solicitud a cualquier ruta. El archivo HTML se sirve desde la ruta especificada en htmlPath. Esto permite que la aplicación de React se renderice correctamente cuando se accede a cualquier ruta en el servidor.</p>
+
+<hr>
+
+<p>El siguiente código es una función asincrónica en JavaScript que se encarga de crear un usuario administrador en una base de datos en caso de que no haya ningún usuario existente.</p>
+<pre><code>async function crearAdmin() {
+  const usuarios = await Usuario.find();
+
+  if (usuarios.length === 0) {
+    const admin = new Usuario({
+      dni: 12345,
+      nombre: "admin",
+      apellido: "admin",
+      email: "admin@admin.com",
+      rol: "Administrativo",
+      activo: true,
+      username: 12345,
+    });
+    const nuevoUsuario = await Usuario.register(admin, "admin123");
+  }
+}
+
+crearAdmin();
+</code></pre>
+<p>En resumen, este código comprueba si no hay usuarios en la base de datos y si es así, registra un nuevo usuario administrativo y lo carga en la base de datos con DNI: 12345 y contraseña: admin123.</p>
+
+<hr>
+<p>El siguiente código configura un manejador de errores en una aplicación Express en Node.js.</p>
+<pre><code>app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).json({ error: err.message });
+});
+</code></pre>
+<p>En resumen, este código configura un manejador de errores global en la aplicación Express. Cuando se produce un error en cualquier parte de la aplicación, este middleware se ejecuta y registra el error en la consola y envía una respuesta con el código de estado 500 y el mensaje de error.</p>
+
+<hr>
+
+<p>El siguiente código inicia el servidor de la aplicación Express para escuchar las solicitudes entrantes en un puerto específico.</p>
+<pre><code>app.listen(process.env.PORT, () => {
+  console.log(`Servidor encendido en el puerto: ${process.env.PORT}`);
+  console.log("https://biblioteca-practicas-profesionalizantes.onrender.com/");
+});
+</code></pre>
+<p>En resumen, este código inicia el servidor de Express y lo pone a la escucha en el puerto especificado en la variable de entorno process.env.PORT. Una vez que el servidor está en funcionamiento, se imprimen mensajes en la consola indicando la dirección y el puerto del servidor, así como la URL de la aplicación.</p>
+
 
 </div>
       </div>
